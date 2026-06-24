@@ -271,10 +271,11 @@ function addFI(name,st){
   return{set s(v){s.className='fs '+v},set t(v){s.textContent=v}};
 }
 
+async function clearAll(){if(!confirm('确定清空当前题库？此操作不可恢复。'))return;await dbClear();fl.innerHTML='';await loadInfo()}
 async function loadInfo(){
   const all=await dbAll();
   totalQ=all.length;
-  document.getElementById('tinfo').innerHTML=totalQ>0?'<div class="badge">题库共 '+totalQ+' 题</div>':'';
+  document.getElementById('tinfo').innerHTML=totalQ>0?'<div class="badge">题库共 '+totalQ+' 题 <a href="#" onclick="clearAll()" style="color:#fff;margin-left:8px;opacity:.7;text-decoration:underline">清空</a></div>':'';
   if(totalQ>0){document.getElementById('csel').classList.add('on');sqw.style.display='block'}
   else{document.getElementById('csel').classList.remove('on');sqw.style.display='none'}
 }
