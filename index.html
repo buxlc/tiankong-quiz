@@ -1,0 +1,436 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>填空题题库 - 自动识别</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f0f2f5;--card:#fff;--pri:#4f6ef7;--prih:#3b5de7;--ok:#22c55e;--err:#ef4444;--txt:#1e293b;--tl:#64748b;--bd:#e2e8f0;--bbg:#fef9c3;--bbd:#facc15;--cbg:#dcfce7;--cbd:#22c55e;--wbg:#fee2e2;--wbd:#ef4444}
+body{font-family:-apple-system,"Microsoft YaHei","PingFang SC",sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+.wrap{max-width:900px;margin:0 auto;padding:24px 16px}
+h1{text-align:center;font-size:28px;margin-bottom:8px}
+.sub{text-align:center;color:var(--tl);margin-bottom:32px;font-size:14px}
+.upl{border:2px dashed var(--bd);border-radius:16px;padding:48px 24px;text-align:center;cursor:pointer;transition:all .3s;background:var(--card);margin-bottom:24px}
+.upl:hover,.upl.dg{border-color:var(--pri);background:#f0f4ff}
+.upl-i{font-size:48px;margin-bottom:12px}
+.upl-t{font-size:16px;margin-bottom:8px}
+.upl-h{font-size:13px;color:var(--tl)}
+.upl-b{display:inline-block;margin-top:16px;padding:10px 28px;background:var(--pri);color:#fff;border:none;border-radius:8px;font-size:15px;cursor:pointer}
+.upl-b:hover{background:var(--prih)}
+.fl{margin-bottom:24px}
+.fi{display:flex;align-items:center;justify-content:space-between;background:var(--card);padding:12px 16px;border-radius:10px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.fn{font-size:14px;flex:1}
+.fs{font-size:12px;padding:4px 10px;border-radius:12px}
+.fs.ok{background:var(--cbg);color:#166534}.fs.er{background:var(--wbg);color:#991b1b}.fs.ld{background:#dbeafe;color:#1e40af}
+.qs{display:none}.qs.on{display:block}
+.qh{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.qst{font-size:14px;color:var(--tl)}.qst span{font-weight:600;color:var(--pri)}
+.qc{background:var(--card);border-radius:12px;padding:20px 24px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .2s}
+.qc:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.qn{font-size:12px;color:var(--pri);font-weight:600;margin-bottom:10px}
+.qt{font-size:16px;line-height:2.4;word-break:break-word}
+.qsrc{font-size:12px;color:var(--tl);margin-top:10px;padding-top:8px;border-top:1px solid var(--bd)}
+.bw{position:relative;display:inline-block;vertical-align:baseline}
+.bi{display:inline-block;border:none;border-bottom:2px solid var(--bbd);background:var(--bbg);padding:2px 8px;font-size:15px;min-width:100px;outline:none;border-radius:4px 4px 0 0;font-family:inherit;transition:all .2s;vertical-align:baseline}
+.bi:focus{border-bottom-color:var(--pri);background:#fefce8}
+.bi.ok{background:var(--cbg);border-bottom-color:var(--cbd);color:#166534}
+.bi.wr{background:var(--wbg);border-bottom-color:var(--wbd);color:#991b1b;text-decoration:line-through}
+.bi:disabled{cursor:default}
+.rl{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--pri);opacity:.45;pointer-events:none;font-family:inherit;white-space:nowrap;display:none}
+.bw.rv .rl{display:block}.bw.rv .bi{color:transparent}
+.ca{display:inline-block;background:var(--cbg);color:#166534;padding:2px 8px;border-radius:4px;font-size:14px;font-weight:600;margin-left:4px;border:1px solid var(--cbd)}.btn{padding:10px 24px;border:none;border-radius:8px;font-size:15px;cursor:pointer;transition:all .2s;font-family:inherit}
+.bp{background:var(--pri);color:#fff}.bp:hover{background:var(--prih)}
+.bs{background:var(--ok);color:#fff}.bs:hover{background:#16a34a}
+.bo{background:transparent;color:var(--pri);border:2px solid var(--pri)}.bo:hover{background:#f0f4ff}
+.bo.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.bsm{padding:6px 14px;font-size:13px}
+.bg{display:flex;gap:10px;flex-wrap:wrap}
+.mr{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
+.mb{padding:8px 20px;border:2px solid var(--bd);border-radius:8px;background:#fff;font-size:14px;cursor:pointer;transition:all .2s;font-family:inherit;color:var(--txt)}
+.mb:hover{border-color:var(--pri)}.mb.sl{border-color:var(--pri);background:var(--pri);color:#fff}
+.cs{display:none;background:var(--card);border-radius:12px;padding:20px 24px;margin-bottom:16px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.cs.on{display:block}
+.cl{font-size:15px;margin-bottom:14px;font-weight:600}
+.co{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.cb{padding:8px 22px;border:2px solid var(--bd);border-radius:8px;background:#fff;font-size:15px;cursor:pointer;transition:all .2s;font-family:inherit;color:var(--txt)}
+.cb:hover{border-color:var(--pri);color:var(--pri)}.cb.sl{border-color:var(--pri);background:var(--pri);color:#fff}
+.ci{width:72px;padding:7px 8px;border:2px solid var(--bd);border-radius:8px;font-size:15px;text-align:center;outline:none;font-family:inherit}
+.ci:focus{border-color:var(--pri)}.ci.sl{border-color:var(--pri)}
+.rb{background:var(--card);border-radius:12px;padding:20px 24px;margin-bottom:20px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.rs{font-size:48px;font-weight:700;color:var(--pri)}
+.rla{font-size:14px;color:var(--tl);margin-top:4px}
+.rd{display:flex;justify-content:center;gap:32px;margin-top:12px}
+.rd div{text-align:center}.rd .n{font-size:24px;font-weight:600}.rd .l{font-size:12px;color:var(--tl)}
+.n.cn{color:var(--ok)}.n.wn{color:var(--err)}
+.pb{width:100%;height:4px;background:var(--bd);border-radius:2px;margin-bottom:24px;overflow:hidden}
+.pf{height:100%;background:var(--pri);border-radius:2px;transition:width .5s ease}
+.tw{position:fixed;right:20px;top:20px;z-index:999;background:var(--card);border-radius:14px;padding:16px 20px;box-shadow:0 4px 20px rgba(0,0,0,.1);min-width:150px;text-align:center;display:none;user-select:none;border:1px solid var(--bd)}
+.tw.on{display:block}
+.tt{font-size:12px;color:var(--tl);margin-bottom:6px;letter-spacing:.5px}
+.td{font-size:32px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:1px;line-height:1.2}
+.tc{display:flex;gap:6px;margin-top:10px;justify-content:center}
+.tb{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;background:#fff;font-size:12px;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--txt)}
+.tb:hover{border-color:var(--pri);color:var(--pri)}
+.tb.run{background:var(--pri);color:#fff;border-color:var(--pri)}
+.tdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.tdot.off{background:var(--bd)}.tdot.on{background:var(--ok);animation:pl 1.5s infinite}
+@keyframes pl{0%,100%{opacity:1}50%{opacity:.4}}
+.ld{display:none;text-align:center;padding:40px}.ld.on{display:block}
+.sp{width:40px;height:40px;border:4px solid var(--bd);border-top-color:var(--pri);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.badge{display:inline-block;background:var(--pri);color:#fff;padding:4px 14px;border-radius:20px;font-size:13px;margin-top:12px}
+@media(max-width:600px){.wrap{padding:16px 12px}h1{font-size:22px}.qc{padding:16px}.bi{min-width:80px;font-size:14px}.tw{right:10px;top:10px;padding:10px 14px;min-width:120px}.td{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>📝 填空题题库</h1>
+<p class="sub">上传 Word 文档，自动识别下划线内容为填空题</p>
+<div id="upSec">
+  <div class="upl" id="dz">
+    <div class="upl-i">📄</div>
+    <div class="upl-t">拖拽 Word 文档到这里，或点击选择文件</div>
+    <div class="upl-h">支持 .docx 格式，可批量上传 · 数据自动保存在浏览器中</div>
+    <button class="upl-b" onclick="document.getElementById('fi').click()">选择文件</button>
+    <input type="file" id="fi" multiple accept=".docx" style="display:none">
+  </div>
+  <div id="tinfo" style="text-align:center"></div>
+  <div class="fl" id="fl"></div>
+  <div class="ld" id="ld"><div class="sp"></div><div>正在解析文档...</div></div>
+  <div class="cs" id="csel">
+    <div class="cl">📋 答题模式</div>
+    <div class="mr">
+      <button class="mb sl" id="mR" onclick="setM('random',this)">🎲 随机做题</button>
+      <button class="mb" id="mO" onclick="setM('order',this)">📑 顺序做题</button>
+    </div>
+    <div class="cl" style="margin-top:8px">每次做几题？</div>
+    <div class="co">
+      <button class="cb" onclick="selC(1,this)">1</button>
+      <button class="cb" onclick="selC(3,this)">3</button>
+      <button class="cb" onclick="selC(5,this)">5</button>
+      <button class="cb" onclick="selC(7,this)">7</button>
+      <button class="cb" onclick="selC(10,this)">10</button>
+      <button class="cb sl" onclick="selC(0,this)">全部</button>
+      <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;color:var(--tl)">自定义</span><input type="number" class="ci" id="cc" min="1" placeholder="N" onfocus="selC(-1,null)" oninput="selC(-1,null)"></div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:16px;display:none" id="sqw">
+    <button class="btn bp" onclick="startQ()" style="font-size:17px;padding:14px 40px">🚀 开始答题</button>
+  </div>
+</div>
+<div class="qs" id="qSec">
+  <div class="qh">
+    <div class="qst">题库 <span id="tc">0</span> 题 · 已答 <span id="ac">0</span> · 剩余 <span id="rc">0</span></div>
+    <div class="bg">
+      <button class="btn bs bsm" onclick="grade()">✅ 批改</button>
+      <button class="btn bo bsm" id="rvb" onclick="togRv()">👁 复习</button>
+      <button class="btn bo bsm" onclick="resetQ()">🔄 重做</button>
+      <button class="btn bo bsm" onclick="nextB()">➡️ 下一批</button>
+      <button class="btn bo bsm" onclick="goBack()">📁 上传</button>
+    </div>
+  </div>
+  <div class="pb"><div class="pf" id="pf" style="width:0%"></div></div>
+  <div class="rb" id="rbar" style="display:none">
+    <div class="rs" id="sd">0%</div><div class="rla">正确率</div>
+    <div class="rd">
+      <div><div class="n cn" id="cc2">0</div><div class="l">正确</div></div>
+      <div><div class="n wn" id="wc">0</div><div class="l">错误</div></div>
+    </div>
+  </div>
+  <div id="qc2"></div>
+</div>
+</div>
+<div class="tw" id="tw">
+  <div class="tt"><span class="tdot off" id="tdot"></span>答题计时</div>
+  <div class="td" id="tdsp">00:00</div>
+  <div class="tc">
+    <button class="tb" id="ttg" onclick="togT()">▶ 开始</button>
+    <button class="tb" onclick="resT()">↺ 重置</button>
+  </div>
+</div><script>
+// ===== IndexedDB =====
+const DBN='tiankongDB', DBV=1, STORE='questions';
+function openDB(){return new Promise((ok,no)=>{const r=indexedDB.open(DBN,DBV);r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE,{keyPath:'id',autoIncrement:true})};r.onsuccess=e=>ok(e.target.result);r.onerror=e=>no(e)})}
+function dbAll(){return new Promise((ok,no)=>{openDB().then(db=>{const tx=db.transaction(STORE,'readonly');const s=tx.objectStore(STORE);const r=s.getAll();r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r)})})}
+function dbAdd(items){return new Promise((ok,no)=>{openDB().then(db=>{const tx=db.transaction(STORE,'readwrite');const s=tx.objectStore(STORE);items.forEach(it=>s.add(it));tx.oncomplete=()=>ok();tx.onerror=()=>no(tx.error)})})}
+function dbClear(){return new Promise((ok,no)=>{openDB().then(db=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).clear();tx.oncomplete=()=>ok()})})}
+
+// ===== ZIP Parser (native DecompressionStream) =====
+class MZip{
+  constructor(buf){this.dv=new DataView(buf);this.by=new Uint8Array(buf)}
+  findEOCD(){for(let i=this.by.length-22;i>=0;i--)if(this.dv.getUint32(i,true)===0x06054b50)return i;return -1}
+  async files(){
+    const eo=this.findEOCD();if(eo<0)throw new Error('Invalid ZIP');
+    const cdOff=this.dv.getUint32(eo+16,true),cdN=this.dv.getUint16(eo+10,true);
+    const out={};let off=cdOff;
+    for(let i=0;i<cdN;i++){
+      if(this.dv.getUint32(off,true)!==0x02014b50)break;
+      const cm=this.dv.getUint16(off+10,true),cs=this.dv.getUint32(off+20,true);
+      const nl=this.dv.getUint16(off+28,true),el=this.dv.getUint16(off+30,true),cl=this.dv.getUint16(off+32,true);
+      const lo=this.dv.getUint32(off+42,true);
+      const fn=new TextDecoder().decode(this.by.slice(off+46,off+46+nl));
+      const lnl=this.dv.getUint16(lo+26,true),lel=this.dv.getUint16(lo+28,true);
+      const doff=lo+30+lnl+lel;
+      const cd=this.by.slice(doff,doff+cs);
+      let fd;
+      if(cm===0){fd=cd}
+      else if(cm===8){
+        try{
+          const ds=new DecompressionStream('deflate-raw');
+          const w=ds.writable.getWriter(),rd=ds.readable.getReader();
+          w.write(cd);w.close();
+          const ch=[];while(true){const{done,value}=await rd.read();if(done)break;ch.push(value)}
+          const tl=ch.reduce((s,c)=>s+c.length,0);fd=new Uint8Array(tl);let p=0;
+          for(const c of ch){fd.set(c,p);p+=c.length}
+        }catch(e){fd=new Uint8Array(0)}
+      }else{fd=new Uint8Array(0)}
+      out[fn]=fd;off+=46+nl+el+cl;
+    }
+    return out;
+  }
+}// ===== DOCX Parser =====
+const NS='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+function gdc(p,ln){for(let i=0;i<p.childNodes.length;i++){const c=p.childNodes[i];if(c.nodeType===1&&c.localName===ln&&(c.namespaceURI===NS||!c.namespaceURI))return c}return null}
+function gdcs(p,ln){const r=[];for(let i=0;i<p.childNodes.length;i++){const c=p.childNodes[i];if(c.nodeType===1&&c.localName===ln&&(c.namespaceURI===NS||!c.namespaceURI))r.push(c)}return r}
+function hasUL(rp){const us=gdcs(rp,'u');for(const u of us){const v=u.getAttributeNS(NS,'val')||u.getAttribute('w:val')||'single';if(v!=='none')return true}return false}
+
+function parseDocx(xml){
+  const doc=new DOMParser().parseFromString(xml,'application/xml');
+  const ps=doc.getElementsByTagNameNS(NS,'p');
+  const qs=[];
+  for(let pi=0;pi<ps.length;pi++){
+    const para=ps[pi];
+    // Check paragraph default underline
+    let defUL=false;
+    const pPr=gdc(para,'pPr');
+    if(pPr){const prp=gdc(pPr,'rPr');if(prp&&hasUL(prp))defUL=true}
+    const segs=[];
+    const runs=gdcs(para,'r');
+    for(const run of runs){
+      const rPr=gdc(run,'rPr');
+      let ul=false;
+      if(rPr){
+        if(hasUL(rPr)){ul=true}
+        // else: has rPr but no underline -> NOT underlined even if para default is UL
+      }else if(defUL){ul=true}
+      const ts=run.getElementsByTagNameNS(NS,'t');
+      let txt='';for(let t=0;t<ts.length;t++)txt+=(ts[t].textContent||'');
+      if(txt)segs.push({text:txt,isUnderlined:ul});
+    }
+    if(!segs.length||!segs.some(s=>s.isUnderlined))continue;
+    // merge consecutive same-type
+    const mg=[];
+    for(const s of segs){
+      if(mg.length&&mg[mg.length-1].isUnderlined===s.isUnderlined){mg[mg.length-1].text+=s.text}
+      else{mg.push({text:s.text,isUnderlined:s.isUnderlined})}
+    }
+    qs.push({segments:mg,fullText:segs.map(s=>s.text).join('')});
+  }
+  return qs;
+}// ===== App State =====
+let mode='random',selCnt=0,rvOn=false,graded=false;
+let curQ=[],usedSet=new Set(),totalQ=0,orderIdx=0;
+const dz=document.getElementById('dz'),fi=document.getElementById('fi'),fl=document.getElementById('fl'),ld=document.getElementById('ld'),sqw=document.getElementById('sqw');
+
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dg')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('dg'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dg');handleF(e.dataTransfer.files)});
+fi.addEventListener('change',e=>handleF(e.target.files));
+
+async function handleF(files){
+  if(!files.length)return;
+  ld.classList.add('on');sqw.style.display='none';
+  const arr=Array.from(files).filter(f=>f.name.endsWith('.docx'));
+  if(!arr.length){alert('请选择 .docx 格式的 Word 文档');ld.classList.remove('on');return}
+  for(const f of arr){
+    const it=addFI(f.name,'ld');
+    try{
+      const buf=await f.arrayBuffer();
+      const zip=new MZip(buf);
+      const zfs=await zip.files();
+      const xm=zfs['word/document.xml'];
+      if(!xm){it.s='er';it.t='无效文档';continue}
+      const xmls=new TextDecoder().decode(xm);
+      const qs=parseDocx(xmls);
+      if(!qs.length){it.s='er';it.t='未找到下划线内容';continue}
+      const items=qs.map(q=>({...q,source:f.name}));
+      await dbAdd(items);
+      it.s='ok';it.t=qs.length+' 题';
+    }catch(e){it.s='er';it.t='解析失败: '+e.message}
+  }
+  ld.classList.remove('on');
+  await loadInfo();
+}
+
+function addFI(name,st){
+  const d=document.createElement('div');d.className='fi';
+  d.innerHTML='<span class="fn">📄 '+esc(name)+'</span><span class="fs '+st+'">解析中...</span>';
+  fl.appendChild(d);
+  const s=d.querySelector('.fs');
+  return{set s(v){s.className='fs '+v},set t(v){s.textContent=v}};
+}
+
+async function loadInfo(){
+  const all=await dbAll();
+  totalQ=all.length;
+  document.getElementById('tinfo').innerHTML=totalQ>0?'<div class="badge">题库共 '+totalQ+' 题</div>':'';
+  if(totalQ>0){document.getElementById('csel').classList.add('on');sqw.style.display='block'}
+  else{document.getElementById('csel').classList.remove('on');sqw.style.display='none'}
+}
+
+function setM(m,btn){mode=m;document.querySelectorAll('.mb').forEach(b=>b.classList.remove('sl'));if(btn)btn.classList.add('sl')}
+function selC(n,btn){
+  document.querySelectorAll('.cb').forEach(b=>b.classList.remove('sl'));
+  document.getElementById('cc').classList.remove('sl');
+  if(n===-1){document.getElementById('cc').classList.add('sl');const v=parseInt(document.getElementById('cc').value);selCnt=v>0?v:0}
+  else{selCnt=n;if(btn)btn.classList.add('sl')}
+}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+// ===== Quiz =====
+async function startQ(){
+  document.getElementById('upSec').style.display='none';
+  document.getElementById('qSec').classList.add('on');
+  document.getElementById('tw').classList.add('on');
+  graded=false;rvOn=false;usedSet=new Set();orderIdx=0;
+  document.getElementById('rvb').classList.remove('on');
+  await loadBatch();
+  resT();startT();
+}
+
+async function loadBatch(){
+  const all=await dbAll();
+  totalQ=all.length;
+  const avail=[];for(let i=0;i<all.length;i++){if(!usedSet.has(i))avail.push(i)}
+  if(!avail.length){curQ=[];document.getElementById('tc').textContent=totalQ;document.getElementById('rc').textContent=0;renderQ();return}
+  let cnt=selCnt>0?selCnt:avail.length;
+  let picked;
+  if(mode==='order'){
+    picked=avail.slice(orderIdx,orderIdx+cnt);
+    orderIdx+=picked.length;
+    if(orderIdx>=avail.length)orderIdx=0;
+  }else{
+    for(let i=avail.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[avail[i],avail[j]]=[avail[j],avail[i]]}
+    picked=avail.slice(0,cnt);
+  }
+  picked.forEach(i=>usedSet.add(i));
+  curQ=picked.map(i=>({...all[i],_idx:i}));
+  document.getElementById('tc').textContent=totalQ;
+  document.getElementById('rc').textContent=totalQ-usedSet.size;
+  document.getElementById('ac').textContent='0';
+  document.getElementById('rbar').style.display='none';
+  document.getElementById('pf').style.width='0%';
+  renderQ();
+}
+
+function renderQ(){
+  const c=document.getElementById('qc2');c.innerHTML='';
+  let gi=0;
+  curQ.forEach((q,qi)=>{
+    const card=document.createElement('div');card.className='qc';
+    const num=document.createElement('div');num.className='qn';num.textContent='第 '+(qi+1)+' 题';
+    const txt=document.createElement('div');txt.className='qt';
+    let bc=0;
+    q.segments.forEach(seg=>{
+      if(seg.isUnderlined){
+        bc++;
+        const w=document.createElement('span');w.className='bw';
+        const inp=document.createElement('input');inp.type='text';inp.className='bi';
+        inp.dataset.answer=seg.text.trim();inp.placeholder='______';
+        inp.style.width=Math.max(100,seg.text.length*18+20)+'px';
+        inp.addEventListener('input',updP);
+        const lbl=document.createElement('span');lbl.className='rl';
+        lbl.textContent=seg.text.trim();
+        w.appendChild(inp);w.appendChild(lbl);txt.appendChild(w);
+      }else{
+        const sp=document.createElement('span');sp.textContent=seg.text;txt.appendChild(sp);
+      }
+    });
+    const src=document.createElement('div');src.className='qsrc';src.textContent='📁 来源: '+(q.source||'未知');
+    card.appendChild(num);card.appendChild(txt);card.appendChild(src);c.appendChild(card);
+  });
+  if(rvOn)applyRv();
+}
+
+function updP(){
+  const inps=document.querySelectorAll('.bi');
+  const fd=Array.from(inps).filter(i=>i.value.trim().length>0).length;
+  document.getElementById('ac').textContent=fd;
+  const pct=inps.length?Math.round(fd/inps.length*100):0;
+  document.getElementById('pf').style.width=pct+'%';
+}function grade(){
+  const inps=document.querySelectorAll('.bi');if(!inps.length)return;
+  if(rvOn){rvOn=false;document.getElementById('rvb').classList.remove('on');applyRv()}
+  let ok=0,wr=0;
+  inps.forEach(inp=>{
+    inp.disabled=true;
+    const ua=inp.value.trim(),ca=inp.dataset.answer;
+    const ex=inp.nextElementSibling;if(ex&&ex.classList.contains('ca'))ex.remove();
+    const nx=inp.parentNode.querySelector('.ca');if(nx)nx.remove();
+    if(norm(ua)===norm(ca)){inp.classList.add('ok');inp.classList.remove('wr');ok++}
+    else{inp.classList.add('wr');inp.classList.remove('ok');wr++;
+      const l=document.createElement('span');l.className='ca';l.textContent=ca;
+      inp.parentNode.insertBefore(l,inp.nextSibling);
+    }
+  });
+  graded=true;const tot=ok+wr;const pct=tot?Math.round(ok/tot*100):0;
+  document.getElementById('rbar').style.display='block';
+  document.getElementById('sd').textContent=pct+'%';
+  document.getElementById('cc2').textContent=ok;
+  document.getElementById('wc').textContent=wr;
+  document.getElementById('pf').style.width='100%';
+  pauseT();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function norm(s){return s.replace(/\s+/g,'').replace(/，/g,',').replace(/。/g,'.').replace(/（/g,'(').replace(/）/g,')').toLowerCase()}
+
+function togRv(){rvOn=!rvOn;document.getElementById('rvb').classList.toggle('on',rvOn);applyRv()}
+function applyRv(){document.querySelectorAll('.bw').forEach(w=>{if(rvOn&&!graded)w.classList.add('rv');else w.classList.remove('rv')})}
+
+function resetQ(){
+  graded=false;rvOn=false;document.getElementById('rvb').classList.remove('on');
+  document.querySelectorAll('.bw').forEach(w=>{
+    w.classList.remove('rv');
+    const inp=w.querySelector('.bi');if(!inp)return;
+    inp.value='';inp.disabled=false;inp.classList.remove('ok','wr');
+    // remove correct-answer labels
+    let nx=inp.nextElementSibling;while(nx){const cur=nx;nx=nx.nextElementSibling;if(cur.classList.contains('ca'))cur.remove()}
+  });
+  document.getElementById('rbar').style.display='none';
+  document.getElementById('ac').textContent='0';
+  document.getElementById('pf').style.width='0%';
+  resT();startT();
+}
+
+async function nextB(){
+  graded=false;rvOn=false;document.getElementById('rvb').classList.remove('on');
+  await loadBatch();
+  if(!curQ.length){alert('所有题目都做过了！可以点"重做"或"上传"新文件');return}
+  resT();startT();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goBack(){
+  document.getElementById('qSec').classList.remove('on');
+  document.getElementById('tw').classList.remove('on');
+  document.getElementById('upSec').style.display='block';
+  fl.innerHTML='';graded=false;rvOn=false;selCnt=0;usedSet=new Set();orderIdx=0;
+  pauseT();loadInfo();
+}// ===== Timer =====
+let tSec=0,tInt=null,tRun=false;
+function startT(){if(tInt)clearInterval(tInt);tRun=true;
+  document.getElementById('ttg').textContent='⏸ 暂停';document.getElementById('ttg').classList.add('run');document.getElementById('tdot').className='tdot on';
+  tInt=setInterval(()=>{tSec++;updTD()},1000)}
+function pauseT(){tRun=false;if(tInt){clearInterval(tInt);tInt=null}
+  document.getElementById('ttg').textContent='▶ 继续';document.getElementById('ttg').classList.remove('run');document.getElementById('tdot').className='tdot off'}
+function togT(){if(tRun)pauseT();else startT()}
+function resT(){if(tInt){clearInterval(tInt);tInt=null}tRun=false;tSec=0;updTD();
+  document.getElementById('ttg').textContent='▶ 开始';document.getElementById('ttg').classList.remove('run');document.getElementById('tdot').className='tdot off'}
+function updTD(){const h=Math.floor(tSec/3600),m=Math.floor(tSec%3600/60),s=tSec%60;
+  const p=n=>String(n).padStart(2,'0');
+  document.getElementById('tdsp').textContent=h>0?h+':'+p(m)+':'+p(s):p(m)+':'+p(s)}
+
+// Init
+loadInfo();
+</script>
+</body>
+</html>
