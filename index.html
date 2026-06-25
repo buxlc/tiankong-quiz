@@ -65,6 +65,7 @@ h1{text-align:center;font-size:28px;margin-bottom:8px}
 .n.cn{color:var(--ok)}.n.wn{color:var(--err)}
 .pb{width:100%;height:4px;background:var(--bd);border-radius:2px;margin-bottom:24px;overflow:hidden}
 .pf{height:100%;background:var(--pri);border-radius:2px;transition:width .5s ease}
+.gs{margin-top:24px;border-top:2px solid var(--bd);padding-top:16px}.gs-h{font-size:13px;color:var(--tl);margin-bottom:12px;font-weight:600}.gs-card{opacity:.7;transition:opacity .2s}.gs-card:hover{opacity:1}
 .tw{position:fixed;right:20px;top:20px;z-index:999;background:var(--card);border-radius:14px;padding:16px 20px;box-shadow:0 4px 20px rgba(0,0,0,.1);min-width:150px;text-align:center;display:none;user-select:none;border:1px solid var(--bd)}
 .tw.on{display:block}
 .tt{font-size:12px;color:var(--tl);margin-bottom:6px;letter-spacing:.5px}
@@ -138,6 +139,7 @@ h1{text-align:center;font-size:28px;margin-bottom:8px}
     </div>
   </div>
   <div id="qc2"></div>
+  <div class="gs" id="gradedHist" style="display:none"></div>
 </div>
 </div>
 <div class="fbtn" id="fbtns" style="display:none">
@@ -225,7 +227,7 @@ function parseDocx(xml){
   return qs;
 }// ===== App State =====
 let mode='random',selCnt=0,rvOn=false,graded=false;
-let curQ=[],usedSet=new Set(),totalQ=0,orderIdx=0,batchHist=[];
+let curQ=[],usedSet=new Set(),totalQ=0,orderIdx=0,batchHist=[],gradedBatches=[];
 const dz=document.getElementById('dz'),fi=document.getElementById('fi'),fl=document.getElementById('fl'),ld=document.getElementById('ld'),sqw=document.getElementById('sqw');
 
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dg')});
@@ -288,7 +290,7 @@ async function startQ(){
   document.getElementById('upSec').style.display='none';
   document.getElementById('qSec').classList.add('on');
   document.getElementById('fbtns').style.display='flex';
-  graded=false;rvOn=false;usedSet=new Set();orderIdx=0;batchHist=[];
+  graded=false;rvOn=false;usedSet=new Set();orderIdx=0;batchHist=[];gradedBatches=[];
   document.getElementById('rvb').classList.remove('on');
   await loadBatch();
 }
@@ -353,6 +355,20 @@ function renderQ(){
     card.appendChild(num);card.appendChild(txt);card.appendChild(src);c.appendChild(card);
   });
   if(rvOn)applyRv();
+  renderGraded();
+}
+
+function renderGraded(){
+  const gh=document.getElementById("gradedHist");
+  if(!gradedBatches.length){gh.style.display="none";return}
+  gh.style.display="block";gh.innerHTML="<div class=\"gs-h\">已批改 ("+gradedBatches.length+"批)</div>";
+  gradedBatches.forEach((b,i)=>{
+    const wrap=document.createElement("div");wrap.style.marginBottom="16px";
+    const sum=document.createElement("div");sum.className="gs-h";sum.textContent="第"+(i+1)+"批: "+b.ok+"/"+b.cards.length+"题 ("+b.pct+"%)";
+    wrap.appendChild(sum);
+    b.cards.forEach(c=>wrap.appendChild(c));
+    gh.appendChild(wrap);
+  });
 }
 
 function updP(){
@@ -377,6 +393,10 @@ function updP(){
     }
   });
   graded=true;const tot=ok+wr;const pct=tot?Math.round(ok/tot*100):0;
+  const cards=document.getElementById("qc2").children;
+  const gradedCards=[];for(let i=0;i<cards.length;i++){const c=cards[i].cloneNode(true);c.classList.add("gs-card");gradedCards.push(c)}
+  gradedBatches.push({cards:gradedCards,ok:ok,wr:wr,pct:pct});
+  renderGraded();
   document.getElementById('rbar').style.display='block';
   document.getElementById('sd').textContent=pct+'%';
   document.getElementById('cc2').textContent=ok;
@@ -405,6 +425,7 @@ function resetQ(){
 }
 
 async function nextB(){
+  if(!graded){grade()}else{
   graded=false;rvOn=false;document.getElementById('rvb').classList.remove('on');
   await loadBatch();
   if(!curQ.length){alert('所有题目都做过了！可以点"重做"或"上传"新文件');return}
@@ -412,6 +433,7 @@ async function nextB(){
 }
 
 async function prevB(){
+  if(!graded){grade()}
   if(batchHist.length<=1){alert('没有上一批了');return}
   graded=false;rvOn=false;document.getElementById('rvb').classList.remove('on');
   const last=batchHist.pop();
@@ -431,7 +453,7 @@ function goBack(){
   document.getElementById('qSec').classList.remove('on');
   document.getElementById('fbtns').style.display='none';
   document.getElementById('upSec').style.display='block';
-  fl.innerHTML='';graded=false;rvOn=false;selCnt=0;usedSet=new Set();orderIdx=0;
+  fl.innerHTML='';graded=false;document.getElementById('gradedHist').innerHTML='';document.getElementById('gradedHist').style.display='none';rvOn=false;selCnt=0;usedSet=new Set();orderIdx=0;
   loadInfo();
 }
 
