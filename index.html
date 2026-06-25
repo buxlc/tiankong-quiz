@@ -65,7 +65,7 @@ h1{text-align:center;font-size:28px;margin-bottom:8px}
 .n.cn{color:var(--ok)}.n.wn{color:var(--err)}
 .pb{width:100%;height:4px;background:var(--bd);border-radius:2px;margin-bottom:24px;overflow:hidden}
 .pf{height:100%;background:var(--pri);border-radius:2px;transition:width .5s ease}
-.gs{margin-top:24px;border-top:2px solid var(--bd);padding-top:16px}.gs-h{font-size:13px;color:var(--tl);margin-bottom:12px;font-weight:600}.gs-card{opacity:.7;transition:opacity .2s}.gs-card:hover{opacity:1}
+.gs{margin-top:24px;border-top:2px solid var(--bd);padding-top:16px}.gs-sel{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.gs-btn{padding:6px 14px;border:2px solid var(--bd);border-radius:8px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--txt)}.gs-btn:hover{border-color:var(--pri)}.gs-btn.sel{background:var(--pri);color:#fff;border-color:var(--pri)}.gs-view{margin-top:8px}.gs-card{opacity:.8}.gs-h{font-size:13px;color:var(--tl);margin-bottom:8px;font-weight:600}
 .tw{position:fixed;right:20px;top:20px;z-index:999;background:var(--card);border-radius:14px;padding:16px 20px;box-shadow:0 4px 20px rgba(0,0,0,.1);min-width:150px;text-align:center;display:none;user-select:none;border:1px solid var(--bd)}
 .tw.on{display:block}
 .tt{font-size:12px;color:var(--tl);margin-bottom:6px;letter-spacing:.5px}
@@ -79,7 +79,7 @@ h1{text-align:center;font-size:28px;margin-bottom:8px}
 .sp{width:40px;height:40px;border:4px solid var(--bd);border-top-color:var(--pri);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .badge{display:inline-block;background:var(--pri);color:#fff;padding:4px 14px;border-radius:20px;font-size:13px;margin-top:12px}
-.fbtn{position:fixed;right:20px;bottom:24px;z-index:100;display:flex;flex-direction:column;gap:8px}.fbtn button{width:48px;height:48px;border-radius:50%;border:none;font-size:20px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.15);transition:all .2s;display:flex;align-items:center;justify-content:center}.fbtn button:hover{transform:scale(1.1)}.frv{background:var(--pri);color:#fff}.frv.on{background:#7c3aed}@media(max-width:600px){.wrap{padding:16px 12px}h1{font-size:22px}.qc{padding:16px}.bi{min-width:80px;font-size:14px}}
+.frv{position:fixed;right:20px;bottom:24px;z-index:100;width:48px;height:48px;border-radius:50%;border:none;font-size:20px;cursor:grab;box-shadow:0 4px 12px rgba(0,0,0,.15);transition:background .2s;display:flex;align-items:center;justify-content:center;background:var(--pri);color:#fff;touch-action:none;user-select:none}.frv.on{background:#7c3aed}.frv:active{cursor:grabbing}@media(max-width:600px){.wrap{padding:16px 12px}h1{font-size:22px}.qc{padding:16px}.bi{min-width:80px;font-size:14px}}
 </style>
 </head>
 <body>
@@ -141,9 +141,9 @@ h1{text-align:center;font-size:28px;margin-bottom:8px}
   <div class="gs" id="gradedHist" style="display:none"></div>
 </div>
 </div>
-<div class="fbtn" id="fbtns" style="display:none">
-  <button class="frv" id="rvb" onclick="togRv()" title="复习模式">👁</button>
-</div>
+<button class="frv" id="rvb" title="复习模式">👁</button>
+  <button class="frv" id="rvb" title="复习模式">👁</button>
+
 <script>
 // ===== IndexedDB =====
 const DBN='tiankongDB', DBV=1, STORE='questions';
@@ -288,7 +288,7 @@ function esc(s){const d=document.createElement('div');d.textContent=s;return d.i
 async function startQ(){
   document.getElementById('upSec').style.display='none';
   document.getElementById('qSec').classList.add('on');
-  document.getElementById('fbtns').style.display='flex';
+  document.getElementById('rvb').style.display='flex';
   graded=false;rvOn=false;usedSet=new Set();orderIdx=0;batchHist=[];gradedBatches=[];
   document.getElementById('rvb').classList.remove('on');
   await loadBatch();
@@ -360,14 +360,27 @@ function renderQ(){
 function renderGraded(){
   const gh=document.getElementById("gradedHist");
   if(!gradedBatches.length){gh.style.display="none";return}
-  gh.style.display="block";gh.innerHTML="<div class=\"gs-h\">已批改 ("+gradedBatches.length+"批)</div>";
+  gh.style.display="block";
+  gh.innerHTML="";
+  const hdr=document.createElement("div");hdr.className="gs-h";hdr.textContent="已批改历史";
+  gh.appendChild(hdr);
+  const sel=document.createElement("div");sel.className="gs-sel";
   gradedBatches.forEach((b,i)=>{
-    const wrap=document.createElement("div");wrap.style.marginBottom="16px";
-    const sum=document.createElement("div");sum.className="gs-h";sum.textContent="第"+(i+1)+"批: "+b.ok+"/"+b.cards.length+"题 ("+b.pct+"%)";
-    wrap.appendChild(sum);
-    b.cards.forEach(c=>wrap.appendChild(c));
-    gh.appendChild(wrap);
+    const btn=document.createElement("button");btn.className="gs-btn"+(i===gradedBatches.length-1?" sel":"");
+    btn.textContent="第"+(i+1)+"批 "+b.pct+"%";
+    btn.onclick=function(){showGradedBatch(i)};
+    sel.appendChild(btn);
   });
+  gh.appendChild(sel);
+  const view=document.createElement("div");view.className="gs-view";view.id="gsView";
+  gh.appendChild(view);
+  showGradedBatch(gradedBatches.length-1);
+}
+function showGradedBatch(idx){
+  document.querySelectorAll(".gs-btn").forEach((b,i)=>b.classList.toggle("sel",i===idx));
+  const b=gradedBatches[idx],view=document.getElementById("gsView");
+  view.innerHTML="<div class=\"gs-h\">"+b.ok+"/"+b.cards.length+"题正确 ("+b.pct+"%)</div>";
+  b.cards.forEach(c=>view.appendChild(c));
 }
 
 function updP(){
@@ -450,12 +463,55 @@ async function prevB(){
 }
 function goBack(){
   document.getElementById('qSec').classList.remove('on');
-  document.getElementById('fbtns').style.display='none';
+  document.getElementById('rvb').style.display='none';
   document.getElementById('upSec').style.display='block';
   fl.innerHTML='';graded=false;document.getElementById('gradedHist').innerHTML='';document.getElementById('gradedHist').style.display='none';rvOn=false;selCnt=0;usedSet=new Set();orderIdx=0;
   loadInfo();
 }
 
+// ===== Drag floating button =====
+(function(){
+  const btn=document.getElementById('rvb');
+  let dragging=false,startX,startY,origX,origY;
+  function pos(e){
+    const t=e.touches?e.touches[0]:e;
+    return{x:t.clientX,y:t.clientY};
+  }
+  function onStart(e){
+    if(e.type==='click'){
+      // Only toggle if not dragged
+      if(btn._wasDragged){btn._wasDragged=false;e.preventDefault();return}
+      return;
+    }
+    e.preventDefault();dragging=true;
+    const p=pos(e);startX=p.x;startY=p.y;
+    const rect=btn.getBoundingClientRect();
+    origX=rect.left;origY=rect.top;
+    btn._moved=false;
+  }
+  function onMove(e){
+    if(!dragging)return;
+    const p=pos(e);
+    const dx=p.x-startX,dy=p.y-startY;
+    if(Math.abs(dx)+Math.abs(dy)>5) btn._moved=true;
+    let nx=origX+dx,ny=origY+dy;
+    nx=Math.max(0,Math.min(window.innerWidth-48,nx));
+    ny=Math.max(0,Math.min(window.innerHeight-48,ny));
+    btn.style.right='auto';btn.style.bottom='auto';
+    btn.style.left=nx+'px';btn.style.top=ny+'px';
+  }
+  function onEnd(){
+    if(!dragging)return;dragging=false;
+    if(btn._moved) btn._wasDragged=true;
+  }
+  btn.addEventListener('mousedown',onStart);
+  btn.addEventListener('touchstart',onStart,{passive:false});
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('touchmove',onMove,{passive:false});
+  document.addEventListener('mouseup',onEnd);
+  document.addEventListener('touchend',onEnd);
+  btn.addEventListener('click',function(e){if(!btn._wasDragged)togRv();else btn._wasDragged=false;e.stopImmediatePropagation()});
+})();
 // Init
 loadInfo();
 </script>
