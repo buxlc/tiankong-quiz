@@ -3,159 +3,339 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>填空题题库 - 自动识别</title>
+<title>填空题题库 - 智能刷题</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f0f2f5;--card:#fff;--pri:#4f6ef7;--prih:#3b5de7;--ok:#22c55e;--err:#ef4444;--txt:#1e293b;--tl:#64748b;--bd:#e2e8f0;--bbg:#fef9c3;--bbd:#facc15;--cbg:#dcfce7;--cbd:#22c55e;--wbg:#fee2e2;--wbd:#ef4444}
-body{font-family:-apple-system,"Microsoft YaHei","PingFang SC",sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
-.wrap{max-width:900px;margin:0 auto;padding:24px 16px}
-h1{text-align:center;font-size:28px;margin-bottom:8px}
-.sub{text-align:center;color:var(--tl);margin-bottom:32px;font-size:14px}
-.upl{border:2px dashed var(--bd);border-radius:16px;padding:48px 24px;text-align:center;cursor:pointer;transition:all .3s;background:var(--card);margin-bottom:24px}
-.upl:hover,.upl.dg{border-color:var(--pri);background:#f0f4ff}
-.upl-i{font-size:48px;margin-bottom:12px}
-.upl-t{font-size:16px;margin-bottom:8px}
-.upl-h{font-size:13px;color:var(--tl)}
-.upl-b{display:inline-block;margin-top:16px;padding:10px 28px;background:var(--pri);color:#fff;border:none;border-radius:8px;font-size:15px;cursor:pointer}
-.upl-b:hover{background:var(--prih)}
-.fl{margin-bottom:24px}
-.fi{display:flex;align-items:center;justify-content:space-between;background:var(--card);padding:12px 16px;border-radius:10px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.fn{font-size:14px;flex:1}
-.fs{font-size:12px;padding:4px 10px;border-radius:12px}
-.fs.ok{background:var(--cbg);color:#166534}.fs.er{background:var(--wbg);color:#991b1b}.fs.ld{background:#dbeafe;color:#1e40af}
-.qs{display:none}.qs.on{display:block}
-.qh{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:50;background:var(--bg);padding:12px 0}
-.qst{font-size:14px;color:var(--tl)}.qst span{font-weight:600;color:var(--pri)}
-.qc{background:var(--card);border-radius:12px;padding:20px 24px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .2s}
-.qc:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
-.qn{font-size:12px;color:var(--pri);font-weight:600;margin-bottom:10px}
-.qt{font-size:16px;line-height:2.4;word-break:break-word}
-.qsrc{font-size:12px;color:var(--tl);margin-top:10px;padding-top:8px;border-top:1px solid var(--bd)}
-.bw{position:relative;display:inline-block;vertical-align:baseline}
-.bi{display:inline-block;border:none;border-bottom:2px solid var(--bbd);background:var(--bbg);padding:2px 8px;font-size:15px;min-width:80px;max-width:calc(100vw - 80px);outline:none;border-radius:4px 4px 0 0;font-family:inherit;transition:all .2s;vertical-align:baseline;overflow:hidden;text-overflow:ellipsis}
-.bi:focus{border-bottom-color:var(--pri);background:#fefce8}
-.bi.ok{background:var(--cbg);border-bottom-color:var(--cbd);color:#166534}
-.bi.wr{background:var(--wbg);border-bottom-color:var(--wbd);color:#991b1b;text-decoration:line-through}
-.bi:disabled{cursor:default}
-.rl{position:absolute;left:8px;right:8px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--pri);opacity:.45;pointer-events:none;font-family:inherit;white-space:normal;word-break:break-all;line-height:1.2;max-height:2.4em;overflow:hidden;display:none}
-.bw.rv .rl{display:block}.bw.rv .bi{color:transparent}
-.ca{display:inline-block;background:var(--cbg);color:#166534;padding:2px 8px;border-radius:4px;font-size:14px;font-weight:600;margin-left:4px;border:1px solid var(--cbd)}.btn{padding:10px 24px;border:none;border-radius:8px;font-size:15px;cursor:pointer;transition:all .2s;font-family:inherit}
-.bp{background:var(--pri);color:#fff}.bp:hover{background:var(--prih)}
-.bs{background:var(--ok);color:#fff}.bs:hover{background:#16a34a}
-.bo{background:transparent;color:var(--pri);border:2px solid var(--pri)}.bo:hover{background:#f0f4ff}
-.bo.on{background:var(--pri);color:#fff;border-color:var(--pri)}
-.bsm{padding:6px 14px;font-size:13px}
-.bg{display:flex;gap:10px;flex-wrap:wrap}
-.mr{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
-.mb{padding:8px 20px;border:2px solid var(--bd);border-radius:8px;background:#fff;font-size:14px;cursor:pointer;transition:all .2s;font-family:inherit;color:var(--txt)}
-.mb:hover{border-color:var(--pri)}.mb.sl{border-color:var(--pri);background:var(--pri);color:#fff}
-.cs{display:none;background:var(--card);border-radius:12px;padding:20px 24px;margin-bottom:16px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.cs.on{display:block}
-.cl{font-size:15px;margin-bottom:14px;font-weight:600}
-.co{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.cb{padding:8px 22px;border:2px solid var(--bd);border-radius:8px;background:#fff;font-size:15px;cursor:pointer;transition:all .2s;font-family:inherit;color:var(--txt)}
-.cb:hover{border-color:var(--pri);color:var(--pri)}.cb.sl{border-color:var(--pri);background:var(--pri);color:#fff}
-.ci{width:72px;padding:7px 8px;border:2px solid var(--bd);border-radius:8px;font-size:15px;text-align:center;outline:none;font-family:inherit}
-.ci:focus{border-color:var(--pri)}.ci.sl{border-color:var(--pri)}
-.rb{background:var(--card);border-radius:12px;padding:20px 24px;margin-bottom:20px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.rs{font-size:48px;font-weight:700;color:var(--pri)}
-.rla{font-size:14px;color:var(--tl);margin-top:4px}
-.rd{display:flex;justify-content:center;gap:32px;margin-top:12px}
-.rd div{text-align:center}.rd .n{font-size:24px;font-weight:600}.rd .l{font-size:12px;color:var(--tl)}
-.n.cn{color:var(--ok)}.n.wn{color:var(--err)}
-.pb{width:100%;height:4px;background:var(--bd);border-radius:2px;margin-bottom:24px;overflow:hidden}
-.pf{height:100%;background:var(--pri);border-radius:2px;transition:width .5s ease}
-.gs{margin-top:24px;border-top:2px solid var(--bd);padding-top:16px}.gs-sel{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.gs-btn{padding:6px 14px;border:2px solid var(--bd);border-radius:8px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--txt)}.gs-btn:hover{border-color:var(--pri)}.gs-btn.sel{background:var(--pri);color:#fff;border-color:var(--pri)}.gs-view{margin-top:8px}.gs-card{opacity:.8}.gs-h{font-size:13px;color:var(--tl);margin-bottom:8px;font-weight:600}
-.tw{position:fixed;right:20px;top:20px;z-index:999;background:var(--card);border-radius:14px;padding:16px 20px;box-shadow:0 4px 20px rgba(0,0,0,.1);min-width:150px;text-align:center;display:none;user-select:none;border:1px solid var(--bd)}
-.tw.on{display:block}
-.tt{font-size:12px;color:var(--tl);margin-bottom:6px;letter-spacing:.5px}
-.td{font-size:32px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:1px;line-height:1.2}
-.tc{display:flex;gap:6px;margin-top:10px;justify-content:center}
-.tb{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;background:#fff;font-size:12px;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--txt)}
-.tb:hover{border-color:var(--pri);color:var(--pri)}
-.tb.run{background:var(--pri);color:#fff;border-color:var(--pri)}
-@keyframes pl{0%,100%{opacity:1}50%{opacity:.4}}
-.ld{display:none;text-align:center;padding:40px}.ld.on{display:block}
-.sp{width:40px;height:40px;border:4px solid var(--bd);border-top-color:var(--pri);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+:root{
+  --bg:#fafbfc;--bg2:#f0f4f8;--card:#ffffff;
+  --pri:#6366f1;--pri2:#818cf8;--pri-light:#e0e7ff;--pri-g:linear-gradient(135deg,#6366f1,#818cf8);
+  --ok:#10b981;--ok-light:#d1fae5;--ok-bg:#f0fdf4;
+  --err:#f43f5e;--err-light:#ffe4e6;--err-bg:#fff1f2;
+  --warn:#f59e0b;--warn-light:#fef3c7;
+  --txt:#1e293b;--txt2:#475569;--txt3:#94a3b8;
+  --border:#e2e8f0;--border2:#cbd5e1;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.04);
+  --shadow:0 4px 16px rgba(0,0,0,.06);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.08);
+  --radius:16px;--radius-sm:12px;--radius-xs:8px;
+}
+body{font-family:-apple-system,"SF Pro Text","Microsoft YaHei","PingFang SC",sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased}
+/* === Animations === */
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 @keyframes spin{to{transform:rotate(360deg)}}
-.badge{display:inline-block;background:var(--pri);color:#fff;padding:4px 14px;border-radius:20px;font-size:13px;margin-top:12px}
-.frv{position:fixed;right:20px;bottom:24px;z-index:100;width:48px;height:48px;border-radius:50%;border:none;font-size:20px;cursor:grab;box-shadow:0 4px 12px rgba(0,0,0,.15);transition:background .2s;display:flex;align-items:center;justify-content:center;background:var(--pri);color:#fff;touch-action:none;user-select:none}.frv.on{background:#7c3aed}.frv:active{cursor:grabbing}@media(max-width:600px){.wrap{padding:16px 12px}h1{font-size:22px}.qc{padding:16px}.bi{min-width:80px;font-size:14px}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
+@keyframes pop{0%{transform:scale(.9);opacity:0}50%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+@keyframes glow{0%,100%{box-shadow:0 0 8px rgba(99,102,241,.2)}50%{box-shadow:0 0 20px rgba(99,102,241,.35)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.fade-in{animation:fadeIn .5s cubic-bezier(.16,1,.3,1) both}
+.slide-up{animation:slideUp .6s cubic-bezier(.16,1,.3,1) both}
+.slide-in{animation:slideIn .4s cubic-bezier(.16,1,.3,1) both}
+.pop-in{animation:pop .4s cubic-bezier(.34,1.56,.64,1) both}
+/* === Layout === */
+.wrap{max-width:820px;margin:0 auto;padding:28px 20px 60px}
+/* === Header === */
+.header{text-align:center;padding:40px 0 32px}
+.logo{display:inline-flex;align-items:center;gap:12px;margin-bottom:12px}
+.logo-icon{width:48px;height:48px;background:var(--pri-g);border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(99,102,241,.2)}
+.logo-icon svg{width:26px;height:26px;color:#fff}
+.header h1{font-size:32px;font-weight:700;color:var(--txt);letter-spacing:-.5px}
+.header .sub{color:var(--txt3);font-size:15px;margin-top:8px}
+/* === Upload Section === */
+#upSec{transition:opacity .3s}
+.drop-zone{border:2px dashed var(--border2);border-radius:var(--radius);padding:56px 28px;text-align:center;cursor:pointer;transition:all .4s cubic-bezier(.16,1,.3,1);background:var(--card);position:relative;overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow-sm)}
+.drop-zone::before{content:'';position:absolute;inset:0;background:var(--pri-g);opacity:0;transition:opacity .4s}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--pri);transform:translateY(-2px);box-shadow:var(--shadow)}
+.drop-zone:hover::before,.drop-zone.dragover::before{opacity:.04}
+.drop-zone>*{position:relative;z-index:1}
+.dz-icon{display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;background:var(--pri-light);border-radius:20px;margin-bottom:20px;transition:all .3s}
+.dz-icon svg{width:36px;height:36px;color:var(--pri)}
+.drop-zone:hover .dz-icon{transform:scale(1.05) rotate(-3deg);background:var(--pri);box-shadow:0 8px 24px rgba(99,102,241,.25)}
+.drop-zone:hover .dz-icon svg{color:#fff}
+.dz-title{font-size:18px;color:var(--txt);margin-bottom:8px;font-weight:600}
+.dz-hint{font-size:14px;color:var(--txt3);margin-bottom:24px}
+.dz-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 36px;background:var(--pri-g);color:#fff;border:none;border-radius:12px;font-size:15px;cursor:pointer;font-weight:600;transition:all .3s;box-shadow:0 4px 16px rgba(99,102,241,.25)}
+.dz-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(99,102,241,.35)}
+.dz-btn:active{transform:translateY(0)}
+.dz-btn svg{width:18px;height:18px}
+input[type=file]{display:none}
+/* === File List === */
+.file-list{margin-bottom:24px}
+.file-item{display:flex;align-items:center;justify-content:space-between;background:var(--card);padding:16px 20px;border-radius:var(--radius-sm);margin-bottom:10px;animation:slideIn .4s cubic-bezier(.16,1,.3,1) both;box-shadow:var(--shadow-sm);border:1px solid var(--border)}
+.file-name{font-size:14px;color:var(--txt);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:10px}
+.file-name svg{width:18px;height:18px;color:var(--pri);flex-shrink:0}
+.file-status{font-size:12px;padding:5px 14px;border-radius:20px;font-weight:600;white-space:nowrap;animation:pop .3s ease}
+.file-status.loading{background:var(--pri-light);color:var(--pri)}
+.file-status.done{background:var(--ok-bg);color:var(--ok)}
+.file-status.error{background:var(--err-bg);color:var(--err)}
+/* === Stats Badge === */
+.stats-bar{text-align:center;margin-bottom:24px}
+.badge{display:inline-flex;align-items:center;gap:10px;background:var(--card);color:var(--txt2);padding:10px 22px;border-radius:24px;font-size:14px;font-weight:500;box-shadow:var(--shadow-sm);border:1px solid var(--border);animation:fadeIn .5s ease}
+.badge .num{color:var(--pri);font-weight:700;font-size:16px}
+.badge .clear-link{color:var(--txt3);font-size:13px;cursor:pointer;text-decoration:underline;margin-left:4px;transition:color .2s}
+.badge .clear-link:hover{color:var(--err)}
+/* === Loading === */
+.loading{display:none;text-align:center;padding:48px;animation:fadeIn .3s}
+.loading.active{display:block}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--pri);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+.loading-text{color:var(--txt3);font-size:14px}
+/* === Mode Selection === */
+.mode-panel{display:none;background:var(--card);border-radius:var(--radius);padding:32px;margin-bottom:24px;box-shadow:var(--shadow);animation:slideUp .6s cubic-bezier(.16,1,.3,1) both;border:1px solid var(--border)}
+.mode-panel.active{display:block}
+.mode-title{font-size:16px;font-weight:600;margin-bottom:20px;color:var(--txt);display:flex;align-items:center;gap:8px}
+.mode-title svg{width:20px;height:20px;color:var(--pri)}
+.mode-options{display:flex;gap:12px;margin-bottom:28px}
+.mode-btn{flex:1;padding:20px;border:2px solid var(--border);border-radius:var(--radius-sm);background:var(--card);font-size:15px;cursor:pointer;transition:all .3s cubic-bezier(.16,1,.3,1);font-weight:500;color:var(--txt);display:flex;flex-direction:column;align-items:center;gap:12px}
+.mode-btn:hover{border-color:var(--pri);transform:translateY(-2px);box-shadow:var(--shadow)}
+.mode-btn.selected{border-color:var(--pri);background:var(--pri-g);color:#fff;box-shadow:0 8px 24px rgba(99,102,241,.2)}
+.mode-btn svg{width:28px;height:28px}
+.mode-btn .mode-name{font-weight:600}
+.mode-btn .mode-desc{font-size:12px;opacity:.7;margin-top:2px}
+.count-section{text-align:center;margin-bottom:8px}
+.count-label{font-size:14px;color:var(--txt2);margin-bottom:14px;font-weight:500}
+.count-options{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.count-btn{padding:10px 24px;border:2px solid var(--border);border-radius:10px;background:var(--card);font-size:15px;cursor:pointer;transition:all .3s;color:var(--txt);font-weight:600}
+.count-btn:hover{border-color:var(--pri);color:var(--pri);transform:translateY(-1px)}
+.count-btn.selected{border-color:var(--pri);background:var(--pri);color:#fff}
+.count-input{width:72px;padding:10px;border:2px solid var(--border);border-radius:10px;font-size:15px;text-align:center;outline:none;transition:border-color .3s;font-weight:600}
+.count-input:focus{border-color:var(--pri)}
+.start-wrap{text-align:center;margin-top:28px;display:none;animation:fadeIn .4s}
+.start-btn{display:inline-flex;align-items:center;gap:10px;padding:16px 52px;background:var(--pri-g);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:600;cursor:pointer;transition:all .3s;box-shadow:0 4px 20px rgba(99,102,241,.3)}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(99,102,241,.4)}
+.start-btn:active{transform:translateY(0)}
+.start-btn svg{width:22px;height:22px}/* === Quiz Section === */
+.quiz-sec{display:none}
+.quiz-sec.active{display:block;animation:fadeIn .5s cubic-bezier(.16,1,.3,1)}
+/* === Quiz Header (sticky) === */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:50;background:rgba(250,251,252,.95);backdrop-filter:blur(12px);padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.quiz-stats{font-size:14px;color:var(--txt2);display:flex;align-items:center;gap:4px}
+.quiz-stats b{color:var(--pri);font-weight:700}
+.quiz-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border:none;border-radius:10px;font-size:13px;cursor:pointer;transition:all .25s cubic-bezier(.16,1,.3,1);font-weight:600;font-family:inherit;white-space:nowrap}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn svg{width:16px;height:16px}
+.btn-pri{background:var(--pri-g);color:#fff;box-shadow:0 2px 8px rgba(99,102,241,.2)}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-outline{background:var(--card);color:var(--txt2);border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.btn-outline:hover{background:var(--bg2);border-color:var(--border2);color:var(--txt)}
+.btn-outline.active{background:var(--pri-g);border-color:transparent;color:#fff;box-shadow:0 2px 8px rgba(99,102,241,.2)}
+.btn-sm{padding:7px 14px;font-size:12px}
+/* === Progress Bar === */
+.progress-wrap{width:100%;height:6px;background:var(--bg2);border-radius:3px;margin-bottom:24px;overflow:hidden}
+.progress-fill{height:100%;background:var(--pri-g);border-radius:3px;transition:width .6s cubic-bezier(.16,1,.3,1);width:0}
+/* === Results Bar === */
+.results-bar{display:none;background:var(--card);border-radius:var(--radius);padding:32px;margin-bottom:24px;text-align:center;box-shadow:var(--shadow);animation:slideUp .6s cubic-bezier(.16,1,.3,1) both;border:1px solid var(--border)}
+.results-bar.active{display:block}
+.result-score{font-size:56px;font-weight:800;background:var(--pri-g);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.result-label{font-size:14px;color:var(--txt3);margin-top:8px}
+.result-details{display:flex;justify-content:center;gap:48px;margin-top:20px}
+.result-details .num{font-size:28px;font-weight:700}
+.result-details .label{font-size:13px;color:var(--txt3);margin-top:4px}
+.result-details .correct{color:var(--ok)}
+.result-details .wrong{color:var(--err)}
+/* === Question Card === */
+.question-card{background:var(--card);border-radius:var(--radius);padding:28px 32px;margin-bottom:18px;box-shadow:var(--shadow-sm);transition:all .35s cubic-bezier(.16,1,.3,1);animation:slideUp .5s cubic-bezier(.16,1,.3,1) both;border:1px solid var(--border)}
+.question-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.question-card.shake{animation:shake .4s ease}
+.question-num{font-size:13px;color:var(--pri);font-weight:700;letter-spacing:.5px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.question-num svg{width:16px;height:16px}
+.question-text{font-size:16px;line-height:2.8;word-break:break-word}
+.question-source{font-size:13px;color:var(--txt3);margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.question-source svg{width:14px;height:14px}
+/* === Blank Input === */
+.blank-wrap{position:relative;display:inline-block;vertical-align:baseline;margin:0 3px}
+.blank-input{display:inline-block;border:none;border-bottom:2px solid var(--pri2);background:var(--pri-light);padding:4px 12px;font-size:15px;min-width:80px;max-width:calc(100vw - 80px);outline:none;border-radius:8px 8px 0 0;font-family:inherit;transition:all .3s cubic-bezier(.16,1,.3,1);vertical-align:baseline}
+.blank-input:focus{border-bottom-color:var(--pri);background:#ddd6fe;box-shadow:0 2px 8px rgba(99,102,241,.12)}
+.blank-input.correct{background:var(--ok-bg);border-bottom-color:var(--ok);color:#065f46}
+.blank-input.wrong{background:var(--err-bg);border-bottom-color:var(--err);color:#9f1239;text-decoration:line-through}
+.blank-input:disabled{cursor:default;opacity:.85}
+/* === Review Overlay (peek) === */
+.review-label{position:absolute;left:12px;right:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--pri);opacity:.5;pointer-events:none;font-family:inherit;white-space:normal;word-break:break-all;line-height:1.3;max-height:2.6em;overflow:hidden;display:none}
+.blank-wrap.reviewing .review-label{display:block;animation:fadeIn .25s ease}
+.blank-wrap.reviewing .blank-input{color:transparent}
+/* === Correct Answer Label === */
+.correct-answer{display:inline-flex;align-items:center;gap:4px;background:var(--ok-bg);color:#065f46;padding:3px 12px;border-radius:8px;font-size:13px;font-weight:600;margin-left:8px;border:1px solid rgba(16,185,129,.15);animation:pop .35s cubic-bezier(.34,1.56,.64,1) both}
+.correct-answer svg{width:14px;height:14px}
+/* === Bottom Actions === */
+.bottom-actions{display:flex;justify-content:center;gap:12px;margin-top:32px;flex-wrap:wrap;padding-bottom:24px}
+/* === Graded History === */
+.graded-section{margin-top:32px;border-top:1px solid var(--border);padding-top:24px;display:none}
+.graded-section.active{display:block;animation:fadeIn .5s ease}
+.graded-header{font-size:14px;color:var(--txt2);margin-bottom:16px;font-weight:600}
+.graded-selector{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.graded-btn{padding:8px 18px;border:2px solid var(--border);border-radius:10px;background:var(--card);font-size:13px;cursor:pointer;font-weight:600;transition:all .3s;color:var(--txt)}
+.graded-btn:hover{border-color:var(--pri);color:var(--pri)}
+.graded-btn.selected{background:var(--pri);color:#fff;border-color:var(--pri)}
+.graded-view{margin-top:12px}
+.graded-card{opacity:.85;transition:opacity .3s}
+.graded-card:hover{opacity:1}
+/* === Recitation Mode === */
+.recite-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;animation:pop .3s ease}
+.recite-badge svg{width:14px;height:14px}
+.recite-wrong-count{display:inline-flex;align-items:center;gap:6px;background:var(--err-bg);color:var(--err);padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;margin-left:8px}
+.recite-wrong-count svg{width:14px;height:14px}
+/* === Toast === */
+.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-120px);z-index:999;background:var(--card);padding:14px 28px;border-radius:14px;box-shadow:var(--shadow-lg);font-size:14px;font-weight:500;transition:transform .5s cubic-bezier(.16,1,.3,1);pointer-events:none;border:1px solid var(--border)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-left:4px solid var(--ok)}
+.toast.error{border-left:4px solid var(--err)}
+.toast.info{border-left:4px solid var(--pri)}
+/* === Floating Review Button === */
+.float-btn{position:fixed;right:24px;bottom:28px;z-index:100;width:56px;height:56px;border-radius:50%;border:none;cursor:grab;box-shadow:0 4px 20px rgba(99,102,241,.3);display:none;align-items:center;justify-content:center;background:var(--pri-g);color:#fff;touch-action:none;user-select:none;transition:all .3s cubic-bezier(.16,1,.3,1)}
+.float-btn svg{width:24px;height:24px}
+.float-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(99,102,241,.4)}
+.float-btn:active{cursor:grabbing;transform:scale(.95)}
+.float-btn.active{background:linear-gradient(135deg,#7c3aed,#a78bfa);box-shadow:0 4px 20px rgba(124,58,237,.35)}
+/* === Responsive === */
+@media(max-width:640px){
+  .wrap{padding:20px 14px 60px}
+  .header h1{font-size:26px}
+  .header{padding:28px 0 24px}
+  .question-card{padding:22px 18px}
+  .blank-input{min-width:70px;font-size:14px}
+  .quiz-header{padding:12px 0;gap:8px}
+  .btn{padding:7px 14px;font-size:12px}
+  .float-btn{width:50px;height:50px;right:16px;bottom:20px}
+  .float-btn svg{width:22px;height:22px}
+  .drop-zone{padding:40px 18px}
+  .mode-panel{padding:24px 18px}
+  .mode-options{gap:8px}
+  .mode-btn{padding:16px 12px}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-<h1>📝 填空题题库</h1>
-<p class="sub">上传 Word 文档，自动识别下划线内容为填空题</p>
-<div id="upSec">
-  <div class="upl" id="dz">
-    <div class="upl-i">📄</div>
-    <div class="upl-t">拖拽 Word 文档到这里，或点击选择文件</div>
-    <div class="upl-h">支持 .docx 格式，可批量上传 · 数据自动保存在浏览器中</div>
-    <button class="upl-b" onclick="document.getElementById('fi').click()">选择文件</button>
-    <input type="file" id="fi" multiple accept=".docx" style="display:none">
-  </div>
-  <div id="tinfo" style="text-align:center"></div>
-  <div class="fl" id="fl"></div>
-  <div class="ld" id="ld"><div class="sp"></div><div>正在解析文档...</div></div>
-  <div class="cs" id="csel">
-    <div class="cl">📋 答题模式</div>
-    <div class="mr">
-      <button class="mb sl" id="mR" onclick="setM('random',this)">🎲 随机做题</button>
-      <button class="mb" id="mO" onclick="setM('order',this)">📑 顺序做题</button>
+<!-- SVG Icon Definitions -->
+<svg style="display:none">
+  <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></symbol>
+</svg><div class="wrap">
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon"><svg><use href="#i-grid"/></svg></div>
+      <h1>填空题题库</h1>
     </div>
-    <div class="cl" style="margin-top:8px">每次做几题？</div>
-    <div class="co">
-      <button class="cb" onclick="selC(1,this)">1</button>
-      <button class="cb" onclick="selC(3,this)">3</button>
-      <button class="cb" onclick="selC(5,this)">5</button>
-      <button class="cb" onclick="selC(7,this)">7</button>
-      <button class="cb" onclick="selC(10,this)">10</button>
-      <button class="cb sl" onclick="selC(0,this)">全部</button>
-      <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;color:var(--tl)">自定义</span><input type="number" class="ci" id="cc" min="1" placeholder="N" onfocus="selC(-1,null)" oninput="selC(-1,null)"></div>
+    <p class="sub">上传 Word 文档，自动识别下划线内容生成填空题</p>
+  </div>
+  <!-- Upload Section -->
+  <div id="upSec">
+    <div class="drop-zone" id="dropZone">
+      <div class="dz-icon"><svg><use href="#i-file"/></svg></div>
+      <div class="dz-title">拖拽 Word 文档到这里，或点击选择</div>
+      <div class="dz-hint">支持 .docx 格式，可批量上传 · 数据自动保存在浏览器</div>
+      <button class="dz-btn" onclick="document.getElementById('fileInput').click()">
+        <svg><use href="#i-upload"/></svg>
+        选择文件
+      </button>
+      <input type="file" id="fileInput" multiple accept=".docx">
+    </div>
+    <div class="stats-bar" id="statsBar"></div>
+    <div class="file-list" id="fileList"></div>
+    <div class="loading" id="loading"><div class="spinner"></div><div class="loading-text">正在解析文档...</div></div>
+    <!-- Mode Selection Panel -->
+    <div class="mode-panel" id="modePanel">
+      <div class="mode-title"><svg><use href="#i-list"/></svg>选择学习模式</div>
+      <div class="mode-options">
+        <button class="mode-btn selected" data-mode="review" onclick="selectMode('review',this)">
+          <svg><use href="#i-book"/></svg>
+          <div>
+            <div class="mode-name">复习模式</div>
+            <div class="mode-desc">可使用偷看功能</div>
+          </div>
+        </button>
+        <button class="mode-btn" data-mode="recite" onclick="selectMode('recite',this)">
+          <svg><use href="#i-edit"/></svg>
+          <div>
+            <div class="mode-name">背诵模式</div>
+            <div class="mode-desc">错题自动重做</div>
+          </div>
+        </button>
+      </div>
+      <div class="count-section">
+        <div class="count-label">每次做几题？</div>
+        <div class="count-options">
+          <button class="count-btn" onclick="selectCount(1,this)">1</button>
+          <button class="count-btn" onclick="selectCount(3,this)">3</button>
+          <button class="count-btn" onclick="selectCount(5,this)">5</button>
+          <button class="count-btn" onclick="selectCount(7,this)">7</button>
+          <button class="count-btn" onclick="selectCount(10,this)">10</button>
+          <button class="count-btn selected" onclick="selectCount(0,this)">全部</button>
+          <div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px;color:var(--txt3)">自定义</span><input type="number" class="count-input" id="customCount" min="1" placeholder="N" onfocus="selectCount(-1,null)" oninput="selectCount(-1,null)"></div>
+        </div>
+      </div>
+      <div class="start-wrap" id="startWrap">
+        <button class="start-btn" onclick="startQuiz()">
+          <svg><use href="#i-play"/></svg>
+          开始答题
+        </button>
+      </div>
     </div>
   </div>
-  <div style="text-align:center;margin-top:16px;display:none" id="sqw">
-    <button class="btn bp" onclick="startQ()" style="font-size:17px;padding:14px 40px">🚀 开始答题</button>
+  <!-- Quiz Section -->
+  <div class="quiz-sec" id="quizSec">
+    <div class="quiz-header">
+      <div class="quiz-stats">
+        题库 <b id="totalCount">0</b> 题 · 已答 <b id="answeredCount">0</b> · 剩余 <b id="remainCount">0</b>
+        <span id="reciteBadge"></span>
+      </div>
+      <div class="quiz-actions">
+        <button class="btn btn-ok btn-sm" onclick="grade()"><svg><use href="#i-check"/></svg>批改</button>
+        <button class="btn btn-outline btn-sm" onclick="prevB()"><svg><use href="#i-arrow-left"/></svg>上一批</button>
+        <button class="btn btn-outline btn-sm" onclick="nextB()">下一批<svg><use href="#i-arrow-right"/></svg></button>
+        <button class="btn btn-outline btn-sm" onclick="resetQ()"><svg><use href="#i-refresh"/></svg>重做</button>
+        <button class="btn btn-outline btn-sm" onclick="goBack()"><svg><use href="#i-folder"/></svg>上传</button>
+      </div>
+    </div>
+    <div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="results-bar" id="resultsBar">
+      <div class="result-score" id="resultScore">0%</div>
+      <div class="result-label">正确率</div>
+      <div class="result-details">
+        <div><div class="num correct" id="correctCount">0</div><div class="label">正确</div></div>
+        <div><div class="num wrong" id="wrongCount">0</div><div class="label">错误</div></div>
+      </div>
+    </div>
+    <div id="questionsContainer"></div>
+    <div class="bottom-actions" id="bottomActions">
+      <button class="btn btn-outline" onclick="prevB()"><svg><use href="#i-arrow-left"/></svg>上一批</button>
+      <button class="btn btn-ok" onclick="grade()"><svg><use href="#i-check"/></svg>批改</button>
+      <button class="btn btn-outline" onclick="nextB()">下一批<svg><use href="#i-arrow-right"/></svg></button>
+    </div>
+    <div class="graded-section" id="gradedSection">
+      <div class="graded-header">已批改历史</div>
+      <div class="graded-selector" id="gradedSelector"></div>
+      <div class="graded-view" id="gradedView"></div>
+    </div>
   </div>
 </div>
-<div class="qs" id="qSec">
-  <div class="qh">
-    <div class="qst">题库 <span id="tc">0</span> 题 · 已答 <span id="ac">0</span> · 剩余 <span id="rc">0</span></div>
-    <div class="bg">
-      <button class="btn bs bsm" onclick="grade()">✅ 批改</button>
-      <button class="btn bo bsm" onclick="resetQ()">🔄 重做</button>
-      <button class="btn bo bsm" onclick="prevB()">⬅️ 上一批</button>
-      <button class="btn bo bsm" onclick="nextB()">➡️ 下一批</button>
-      <button class="btn bo bsm" onclick="goBack()">📁 上传</button>
-    </div>
-  </div>
-  <div class="pb"><div class="pf" id="pf" style="width:0%"></div></div>
-  <div class="rb" id="rbar" style="display:none">
-    <div class="rs" id="sd">0%</div><div class="rla">正确率</div>
-    <div class="rd">
-      <div><div class="n cn" id="cc2">0</div><div class="l">正确</div></div>
-      <div><div class="n wn" id="wc">0</div><div class="l">错误</div></div>
-    </div>
-  </div>
-  <div id="qc2"></div>
-  <div style="display:flex;justify-content:center;gap:10px;margin-top:20px;flex-wrap:wrap">
-    <button class="btn bo bsm" onclick="prevB()">⬅️ 上一批</button>
-    <button class="btn bs bsm" onclick="grade()">✅ 批改</button>
-    <button class="btn bo bsm" onclick="nextB()">➡️ 下一批</button>
-  </div>
-  <div class="gs" id="gradedHist" style="display:none"></div>
-</div>
-</div>
-<button class="frv" id="rvb" title="复习模式">👁</button>
-<script>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<!-- Floating Review Button -->
+<button class="float-btn" id="floatBtn" title="复习偷看"><svg><use href="#i-eye"/></svg></button><script>
 // ===== IndexedDB =====
-const DBN='tiankongDB', DBV=1, STORE='questions';
+const DBN='tiankongDB',DBV=1,STORE='questions';
 function openDB(){return new Promise((ok,no)=>{const r=indexedDB.open(DBN,DBV);r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE,{keyPath:'id',autoIncrement:true})};r.onsuccess=e=>ok(e.target.result);r.onerror=e=>no(e)})}
 function dbAll(){return new Promise((ok,no)=>{openDB().then(db=>{const tx=db.transaction(STORE,'readonly');const s=tx.objectStore(STORE);const r=s.getAll();r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r)})})}
 function dbAdd(items){return new Promise((ok,no)=>{openDB().then(db=>{const tx=db.transaction(STORE,'readwrite');const s=tx.objectStore(STORE);items.forEach(it=>s.add(it));tx.oncomplete=()=>ok();tx.onerror=()=>no(tx.error)})})}
 function dbClear(){return new Promise((ok,no)=>{openDB().then(db=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).clear();tx.oncomplete=()=>ok()})})}
-
-// ===== ZIP Parser (native DecompressionStream) =====
+// ===== ZIP Parser =====
 class MZip{
   constructor(buf){this.dv=new DataView(buf);this.by=new Uint8Array(buf)}
   findEOCD(){for(let i=this.by.length-22;i>=0;i--)if(this.dv.getUint32(i,true)===0x06054b50)return i;return -1}
@@ -170,341 +350,272 @@ class MZip{
       const lo=this.dv.getUint32(off+42,true);
       const fn=new TextDecoder().decode(this.by.slice(off+46,off+46+nl));
       const lnl=this.dv.getUint16(lo+26,true),lel=this.dv.getUint16(lo+28,true);
-      const doff=lo+30+lnl+lel;
-      const cd=this.by.slice(doff,doff+cs);
-      let fd;
+      const doff=lo+30+lnl+lel;const cd=this.by.slice(doff,doff+cs);let fd;
       if(cm===0){fd=cd}
-      else if(cm===8){
-        try{
-          const ds=new DecompressionStream('deflate-raw');
-          const w=ds.writable.getWriter(),rd=ds.readable.getReader();
-          w.write(cd);w.close();
-          const ch=[];while(true){const{done,value}=await rd.read();if(done)break;ch.push(value)}
-          const tl=ch.reduce((s,c)=>s+c.length,0);fd=new Uint8Array(tl);let p=0;
-          for(const c of ch){fd.set(c,p);p+=c.length}
-        }catch(e){fd=new Uint8Array(0)}
-      }else{fd=new Uint8Array(0)}
+      else if(cm===8){try{const ds=new DecompressionStream('deflate-raw');const w=ds.writable.getWriter(),rd=ds.readable.getReader();w.write(cd);w.close();const ch=[];while(true){const{done,value}=await rd.read();if(done)break;ch.push(value)}const tl=ch.reduce((s,c)=>s+c.length,0);fd=new Uint8Array(tl);let p=0;for(const c of ch){fd.set(c,p);p+=c.length}}catch(e){fd=new Uint8Array(0)}}else{fd=new Uint8Array(0)}
       out[fn]=fd;off+=46+nl+el+cl;
-    }
-    return out;
+    }return out;
   }
-}// ===== DOCX Parser =====
+}
+// ===== DOCX Parser =====
 const NS='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 function gdc(p,ln){for(let i=0;i<p.childNodes.length;i++){const c=p.childNodes[i];if(c.nodeType===1&&c.localName===ln&&(c.namespaceURI===NS||!c.namespaceURI))return c}return null}
 function gdcs(p,ln){const r=[];for(let i=0;i<p.childNodes.length;i++){const c=p.childNodes[i];if(c.nodeType===1&&c.localName===ln&&(c.namespaceURI===NS||!c.namespaceURI))r.push(c)}return r}
 function hasUL(rp){const us=gdcs(rp,'u');for(const u of us){const v=u.getAttributeNS(NS,'val')||u.getAttribute('w:val')||'single';if(v!=='none')return true}return false}
-
 function parseDocx(xml){
   const doc=new DOMParser().parseFromString(xml,'application/xml');
-  const ps=doc.getElementsByTagNameNS(NS,'p');
-  const qs=[];
+  const ps=doc.getElementsByTagNameNS(NS,'p');const qs=[];
   for(let pi=0;pi<ps.length;pi++){
-    const para=ps[pi];
-    // Check paragraph default underline
-    let defUL=false;
-    const pPr=gdc(para,'pPr');
+    const para=ps[pi];let defUL=false;const pPr=gdc(para,'pPr');
     if(pPr){const prp=gdc(pPr,'rPr');if(prp&&hasUL(prp))defUL=true}
-    const segs=[];
-    const runs=gdcs(para,'r');
-    for(const run of runs){
-      const rPr=gdc(run,'rPr');
-      let ul=false;
-      if(rPr){
-        if(hasUL(rPr)){ul=true}
-        // else: has rPr but no underline -> NOT underlined even if para default is UL
-      }else if(defUL){ul=true}
-      const ts=run.getElementsByTagNameNS(NS,'t');
-      let txt='';for(let t=0;t<ts.length;t++)txt+=(ts[t].textContent||'');
-      if(txt)segs.push({text:txt,isUnderlined:ul});
-    }
+    const segs=[];const runs=gdcs(para,'r');
+    for(const run of runs){const rPr=gdc(run,'rPr');let ul=false;if(rPr){if(hasUL(rPr))ul=true}else if(defUL)ul=true;const ts=run.getElementsByTagNameNS(NS,'t');let txt='';for(let t=0;t<ts.length;t++)txt+=(ts[t].textContent||'');if(txt)segs.push({text:txt,isUnderlined:ul})}
     if(!segs.length||!segs.some(s=>s.isUnderlined))continue;
-    // merge consecutive same-type
-    const mg=[];
-    for(const s of segs){
-      if(mg.length&&mg[mg.length-1].isUnderlined===s.isUnderlined){mg[mg.length-1].text+=s.text}
-      else{mg.push({text:s.text,isUnderlined:s.isUnderlined})}
-    }
+    const mg=[];for(const s of segs){if(mg.length&&mg[mg.length-1].isUnderlined===s.isUnderlined){mg[mg.length-1].text+=s.text}else{mg.push({text:s.text,isUnderlined:s.isUnderlined})}}
     qs.push({segments:mg,fullText:segs.map(s=>s.text).join('')});
-  }
-  return qs;
-}// ===== App State =====
-let mode='random',selCnt=0,rvOn=false,graded=false;
+  }return qs;
+}
+// ===== State =====
+let mode='review',selCnt=0,rvOn=false,graded=false;
 let curQ=[],usedSet=new Set(),totalQ=0,orderIdx=0,batchHist=[],gradedBatches=[];
-const dz=document.getElementById('dz'),fi=document.getElementById('fi'),fl=document.getElementById('fl'),ld=document.getElementById('ld'),sqw=document.getElementById('sqw');
-
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dg')});
-dz.addEventListener('dragleave',()=>dz.classList.remove('dg'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dg');handleF(e.dataTransfer.files)});
-fi.addEventListener('change',e=>handleF(e.target.files));
-
-async function handleF(files){
+let wrongQueue=[],reciteCount=0,recitePhase='normal';
+// ===== Toast =====
+function showToast(msg,type='info'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type;requestAnimationFrame(()=>{t.classList.add('show')});setTimeout(()=>t.classList.remove('show'),2500)}
+// ===== DOM refs =====
+const dropZone=document.getElementById('dropZone'),fileInput=document.getElementById('fileInput'),fileList=document.getElementById('fileList'),loading=document.getElementById('loading'),startWrap=document.getElementById('startWrap');
+// ===== Upload =====
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragover')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('dragover');handleFiles(e.dataTransfer.files)});
+fileInput.addEventListener('change',e=>handleFiles(e.target.files));async function handleFiles(files){
   if(!files.length)return;
-  ld.classList.add('on');sqw.style.display='none';
+  loading.classList.add('active');startWrap.style.display='none';
   const arr=Array.from(files).filter(f=>f.name.endsWith('.docx'));
-  if(!arr.length){alert('请选择 .docx 格式的 Word 文档');ld.classList.remove('on');return}
+  if(!arr.length){showToast('请选择 .docx 格式的 Word 文档','error');loading.classList.remove('active');return}
   for(const f of arr){
-    const it=addFI(f.name,'ld');
+    const item=addFileItem(f.name);
     try{
-      const buf=await f.arrayBuffer();
-      const zip=new MZip(buf);
-      const zfs=await zip.files();
+      const buf=await f.arrayBuffer();const zip=new MZip(buf);const zfs=await zip.files();
       const xm=zfs['word/document.xml'];
-      if(!xm){it.s='er';it.t='无效文档';continue}
-      const xmls=new TextDecoder().decode(xm);
-      const qs=parseDocx(xmls);
-      if(!qs.length){it.s='er';it.t='未找到下划线内容';continue}
-      const items=qs.map(q=>({...q,source:f.name}));
-      await dbAdd(items);
-      it.s='ok';it.t=qs.length+' 题';
-    }catch(e){it.s='er';it.t='解析失败: '+e.message}
+      if(!xm){item.setStatus('error','无效文档');continue}
+      const xmls=new TextDecoder().decode(xm);const qs=parseDocx(xmls);
+      if(!qs.length){item.setStatus('error','未找到下划线内容');continue}
+      await dbAdd(qs.map(q=>({...q,source:f.name})));
+      item.setStatus('done',qs.length+' 题');
+    }catch(e){item.setStatus('error','解析失败: '+e.message)}
   }
-  ld.classList.remove('on');
-  await loadInfo();
+  loading.classList.remove('active');await loadInfo();
 }
-
-function addFI(name,st){
-  const d=document.createElement('div');d.className='fi';
-  d.innerHTML='<span class="fn">📄 '+esc(name)+'</span><span class="fs '+st+'">解析中...</span>';
-  fl.appendChild(d);
-  const s=d.querySelector('.fs');
-  return{set s(v){s.className='fs '+v},set t(v){s.textContent=v}};
-}
-
-async function clearAll(){if(!confirm('确定清空当前题库？此操作不可恢复。'))return;await dbClear();fl.innerHTML='';await loadInfo()}
-async function loadInfo(){
-  const all=await dbAll();
-  totalQ=all.length;
-  document.getElementById('tinfo').innerHTML=totalQ>0?'<div class="badge">题库共 '+totalQ+' 题 <a href="#" onclick="clearAll()" style="color:#fff;margin-left:8px;opacity:.7;text-decoration:underline">清空</a></div>':'';
-  if(totalQ>0){document.getElementById('csel').classList.add('on');sqw.style.display='block'}
-  else{document.getElementById('csel').classList.remove('on');sqw.style.display='none'}
-}
-
-function setM(m,btn){mode=m;document.querySelectorAll('.mb').forEach(b=>b.classList.remove('sl'));if(btn)btn.classList.add('sl')}
-function selC(n,btn){
-  document.querySelectorAll('.cb').forEach(b=>b.classList.remove('sl'));
-  document.getElementById('cc').classList.remove('sl');
-  if(n===-1){document.getElementById('cc').classList.add('sl');const v=parseInt(document.getElementById('cc').value);selCnt=v>0?v:0}
-  else{selCnt=n;if(btn)btn.classList.add('sl')}
+function addFileItem(name){
+  const d=document.createElement('div');d.className='file-item';
+  d.innerHTML='<span class="file-name"><svg><use href="#i-file"/></svg>'+esc(name)+'</span><span class="file-status loading">解析中...</span>';
+  fileList.appendChild(d);const s=d.querySelector('.file-status');
+  return{setStatus:(cls,txt)=>{s.className='file-status '+cls;s.textContent=txt}};
 }
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+async function loadInfo(){
+  const all=await dbAll();totalQ=all.length;
+  const bar=document.getElementById('statsBar');
+  bar.innerHTML=totalQ>0?'<div class="badge">题库共 <span class="num">'+totalQ+'</span> 题 <span class="clear-link" onclick="clearAll()">清空</span></div>':'';
+  const panel=document.getElementById('modePanel');
+  if(totalQ>0){panel.classList.add('active');startWrap.style.display='block'}else{panel.classList.remove('active');startWrap.style.display='none'}
+}
+async function clearAll(){
+  if(!confirm('确定清空当前题库？此操作不可恢复。'))return;
+  await dbClear();fileList.innerHTML='';await loadInfo();showToast('题库已清空','info');
+}
+function selectMode(m,btn){
+  mode=m;document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('selected'));
+  if(btn)btn.classList.add('selected');
+}
+function selectCount(n,btn){
+  document.querySelectorAll('.count-btn').forEach(b=>b.classList.remove('selected'));
+  if(n===-1){document.getElementById('customCount').focus();const v=parseInt(document.getElementById('customCount').value);selCnt=v>0?v:0}else{selCnt=n;if(btn)btn.classList.add('selected')}
+}
 // ===== Quiz =====
-async function startQ(){
+async function startQuiz(){
   document.getElementById('upSec').style.display='none';
-  document.getElementById('qSec').classList.add('on');
-  document.getElementById('rvb').style.display='flex';
+  document.getElementById('quizSec').classList.add('active');
+  if(mode==='review')document.getElementById('floatBtn').style.display='flex';
   graded=false;rvOn=false;usedSet=new Set();orderIdx=0;batchHist=[];gradedBatches=[];
-  document.getElementById('rvb').classList.remove('on');
-  await loadBatch();
+  wrongQueue=[];reciteCount=0;recitePhase='normal';
+  document.getElementById('floatBtn').classList.remove('active');
+  updateReciteBadge();await loadBatch();
 }
-
 async function loadBatch(){
-  const all=await dbAll();
-  totalQ=all.length;
+  const all=await dbAll();totalQ=all.length;
   const avail=[];for(let i=0;i<all.length;i++){if(!usedSet.has(i))avail.push(i)}
-  if(!avail.length){curQ=[];document.getElementById('tc').textContent=totalQ;document.getElementById('rc').textContent=0;renderQ();return}
-  let cnt=selCnt>0?selCnt:avail.length;
-  let picked;
-  if(mode==='order'){
-    // Fix: use absolute cursor through all[], not filtered avail[]
-    while(orderIdx<all.length && usedSet.has(orderIdx)) orderIdx++;
-    picked=[];
-    let scan=orderIdx;
-    while(picked.length<cnt && scan<all.length){
-      if(!usedSet.has(scan)) picked.push(scan);
-      scan++;
-    }
-    orderIdx=scan;
-    if(orderIdx>=all.length) orderIdx=0;
+  if(mode==='recite'&&wrongQueue.length>0&&(reciteCount>=5||avail.length===0)){
+    recitePhase='retry';let cnt=Math.min(wrongQueue.length,5);
+    if(avail.length>0&&avail.length<5){cnt=avail.length;const picked=avail.slice(0,cnt);const wrongItems=wrongQueue.splice(0,5-avail.length);picked.forEach(i=>usedSet.add(i));wrongItems.forEach(wq=>usedSet.add(wq));const combined=[...picked,...wrongItems];batchHist.push(combined);curQ=combined.map(i=>({...all[i],_idx:i,isRetry:!avail.includes(i)}));reciteCount=0;recitePhase='normal'}else{const wrongItems=wrongQueue.splice(0,cnt);wrongItems.forEach(wq=>usedSet.delete(wq));batchHist.push(wrongItems);curQ=wrongItems.map(i=>({...all[i],_idx:i,isRetry:true}));reciteCount=0}
   }else{
-    for(let i=avail.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[avail[i],avail[j]]=[avail[j],avail[i]]}
-    picked=avail.slice(0,cnt);
+    recitePhase='normal';
+    if(!avail.length){curQ=[];updateStats();renderQ();return}
+    let cnt=selCnt>0?selCnt:avail.length;let picked;
+    if(orderIdx>=all.length){
+      if(mode==='recite'&&wrongQueue.length>0){const wrongItems=wrongQueue.splice(0,Math.min(wrongQueue.length,5));wrongItems.forEach(wq=>usedSet.delete(wq));batchHist.push(wrongItems);curQ=wrongItems.map(i=>({...all[i],_idx:i,isRetry:true}));reciteCount=0}else{curQ=[];updateStats();renderQ();return}
+    }else{
+      while(orderIdx<all.length&&usedSet.has(orderIdx))orderIdx++;
+      picked=[];let scan=orderIdx;
+      while(picked.length<cnt&&scan<all.length){if(!usedSet.has(scan))picked.push(scan);scan++}
+      orderIdx=scan;batchHist.push(picked);picked.forEach(i=>usedSet.add(i));
+      curQ=picked.map(i=>({...all[i],_idx:i,isRetry:false}));reciteCount=0;
+    }
   }
-  batchHist.push(picked);
-  picked.forEach(i=>usedSet.add(i));
-  curQ=picked.map(i=>({...all[i],_idx:i}));
-  document.getElementById('tc').textContent=totalQ;
-  document.getElementById('rc').textContent=totalQ-usedSet.size;
-  document.getElementById('ac').textContent='0';
-  document.getElementById('rbar').style.display='none';
-  document.getElementById('pf').style.width='0%';
-  renderQ();
+  updateStats();renderQ();
 }
-
-function renderQ(){
-  const c=document.getElementById('qc2');c.innerHTML='';
-  let gi=0;
+function updateStats(){
+  document.getElementById('totalCount').textContent=totalQ;
+  document.getElementById('answeredCount').textContent='0';
+  document.getElementById('remainCount').textContent=totalQ-usedSet.size;
+  document.getElementById('progressFill').style.width='0%';
+  updateReciteBadge();
+}
+function updateReciteBadge(){
+  const el=document.getElementById('reciteBadge');
+  if(mode==='recite'){
+    let html='<span class="recite-badge"><svg><use href="#i-edit"/></svg>背诵模式</span>';
+    if(wrongQueue.length>0)html+='<span class="recite-wrong-count"><svg><use href="#i-x"/></svg>'+wrongQueue.length+' 题待重做</span>';
+    el.innerHTML=html;
+  }else el.innerHTML='';
+}function renderQ(){
+  const c=document.getElementById('questionsContainer');c.innerHTML='';
+  document.getElementById('resultsBar').classList.remove('active');
   curQ.forEach((q,qi)=>{
-    const card=document.createElement('div');card.className='qc';
-    const num=document.createElement('div');num.className='qn';num.textContent='第 '+(qi+1)+' 题';
-    const txt=document.createElement('div');txt.className='qt';
-    let bc=0;
+    const card=document.createElement('div');card.className='question-card';card.style.animationDelay=qi*0.06+'s';
+    const num=document.createElement('div');num.className='question-num';
+    num.innerHTML=(q.isRetry?'<svg><use href="#i-repeat"/></svg>重做 · ':'')+'第 '+(qi+1)+' 题';
+    const txt=document.createElement('div');txt.className='question-text';
     q.segments.forEach(seg=>{
       if(seg.isUnderlined){
-        bc++;
-        const w=document.createElement('span');w.className='bw';
-        const inp=document.createElement('input');inp.type='text';inp.className='bi';
+        const w=document.createElement('span');w.className='blank-wrap';
+        const inp=document.createElement('input');inp.type='text';inp.className='blank-input';
         inp.dataset.answer=seg.text.trim();inp.placeholder='______';
         inp.style.width=Math.min(Math.max(100,seg.text.length*18+20),320)+'px';
-        inp.addEventListener('input',updP);
-        const lbl=document.createElement('span');lbl.className='rl';
-        lbl.textContent=seg.text.trim();
+        inp.addEventListener('input',updateProgress);
+        inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const cards=[...document.querySelectorAll('.question-card')];const ci=cards.indexOf(card);const next=cards.slice(ci+1).reduce((f,c2)=>f||c2.querySelector('.blank-input:not(:disabled)'),null)||c.querySelector('.blank-input:not(:disabled)');if(next)next.focus()}});
+        const lbl=document.createElement('span');lbl.className='review-label';lbl.textContent=seg.text.trim();
         w.appendChild(inp);w.appendChild(lbl);txt.appendChild(w);
-      }else{
-        const sp=document.createElement('span');sp.textContent=seg.text;txt.appendChild(sp);
-      }
+      }else{const sp=document.createElement('span');sp.textContent=seg.text;txt.appendChild(sp)}
     });
-    const src=document.createElement('div');src.className='qsrc';src.textContent='📁 来源: '+(q.source||'未知');
+    const src=document.createElement('div');src.className='question-source';
+    src.innerHTML='<svg><use href="#i-folder"/></svg>'+(q.source||'未知来源');
     card.appendChild(num);card.appendChild(txt);card.appendChild(src);c.appendChild(card);
   });
-  if(rvOn)applyRv();
-  renderGraded();
+  if(rvOn)applyReview();
+  document.getElementById('gradedSection').classList.remove('active');
 }
-
-function renderGraded(){
-  const gh=document.getElementById("gradedHist");
-  if(!gradedBatches.length){gh.style.display="none";return}
-  gh.style.display="block";
-  gh.innerHTML="";
-  const hdr=document.createElement("div");hdr.className="gs-h";hdr.textContent="已批改历史";
-  gh.appendChild(hdr);
-  const sel=document.createElement("div");sel.className="gs-sel";
-  gradedBatches.forEach((b,i)=>{
-    const btn=document.createElement("button");btn.className="gs-btn"+(i===gradedBatches.length-1?" sel":"");
-    btn.textContent="第"+(i+1)+"批 "+b.pct+"%";
-    btn.onclick=function(){showGradedBatch(i)};
-    sel.appendChild(btn);
-  });
-  gh.appendChild(sel);
-  const view=document.createElement("div");view.className="gs-view";view.id="gsView";
-  gh.appendChild(view);
-  showGradedBatch(gradedBatches.length-1);
+function updateProgress(){
+  const inps=document.querySelectorAll('.blank-input');
+  const filled=Array.from(inps).filter(i=>i.value.trim().length>0).length;
+  document.getElementById('answeredCount').textContent=filled;
+  const pct=inps.length?Math.round(filled/inps.length*100):0;
+  document.getElementById('progressFill').style.width=pct+'%';
 }
-function showGradedBatch(idx){
-  document.querySelectorAll(".gs-btn").forEach((b,i)=>b.classList.toggle("sel",i===idx));
-  const b=gradedBatches[idx],view=document.getElementById("gsView");
-  view.innerHTML="<div class=\"gs-h\">"+b.ok+"/"+b.cards.length+"题正确 ("+b.pct+"%)</div>";
-  b.cards.forEach(c=>view.appendChild(c));
-}
-
-function updP(){
-  const inps=document.querySelectorAll('.bi');
-  const fd=Array.from(inps).filter(i=>i.value.trim().length>0).length;
-  document.getElementById('ac').textContent=fd;
-  const pct=inps.length?Math.round(fd/inps.length*100):0;
-  document.getElementById('pf').style.width=pct+'%';
-}function grade(){
-  const inps=document.querySelectorAll('.bi');if(!inps.length)return;
-  if(rvOn){rvOn=false;document.getElementById('rvb').classList.remove('on');applyRv()}
+function norm(s){return s.replace(/[\s\u3000\p{P}\p{S}]/gu,"").toLowerCase()}
+function grade(){
+  const inps=document.querySelectorAll('.blank-input');if(!inps.length)return;
+  if(rvOn){rvOn=false;document.getElementById('floatBtn').classList.remove('active');applyReview()}
   let ok=0,wr=0;
   inps.forEach(inp=>{
     inp.disabled=true;
     const ua=inp.value.trim(),ca=inp.dataset.answer;
-    const ex=inp.nextElementSibling;if(ex&&ex.classList.contains('ca'))ex.remove();
-    const nx=inp.parentNode.querySelector('.ca');if(nx)nx.remove();
-    if(norm(ua)===norm(ca)){inp.classList.add('ok');inp.classList.remove('wr');ok++}
-    else{inp.classList.add('wr');inp.classList.remove('ok');wr++;
-      const l=document.createElement('span');l.className='ca';l.textContent=ca;
+    let nx=inp.nextElementSibling;while(nx){const cur=nx;nx=nx.nextElementSibling;if(cur.classList.contains('correct-answer'))cur.remove()}
+    if(norm(ua)===norm(ca)){inp.classList.add('correct');inp.classList.remove('wrong');ok++}
+    else{
+      inp.classList.add('wrong');inp.classList.remove('correct');wr++;
+      const l=document.createElement('span');l.className='correct-answer';
+      l.innerHTML='<svg><use href="#i-check"/></svg>'+ca;
       inp.parentNode.insertBefore(l,inp.nextSibling);
+      if(mode==='recite'){const card=inp.closest('.question-card');const idx=[...document.getElementById('questionsContainer').children].indexOf(card);const qIdx=curQ[idx]?._idx;if(qIdx!==undefined&&!wrongQueue.includes(qIdx))wrongQueue.push(qIdx);card.classList.add('shake')}
     }
   });
   graded=true;const tot=ok+wr;const pct=tot?Math.round(ok/tot*100):0;
-  const cards=document.getElementById("qc2").children;
-  const gradedCards=[];for(let i=0;i<cards.length;i++){const c=cards[i].cloneNode(true);c.classList.add("gs-card");gradedCards.push(c)}
-  gradedBatches.push({cards:gradedCards,ok:ok,wr:wr,pct:pct});
-  renderGraded();
-  document.getElementById('rbar').style.display='block';
-  document.getElementById('sd').textContent=pct+'%';
-  document.getElementById('cc2').textContent=ok;
-  document.getElementById('wc').textContent=wr;
-  document.getElementById('pf').style.width='100%';
+  const cards=document.getElementById('questionsContainer').children;
+  const gradedCards=[];for(let i=0;i<cards.length;i++){const c=cards[i].cloneNode(true);c.classList.add('graded-card');gradedCards.push(c)}
+  gradedBatches.push({cards:gradedCards,ok,wr,pct});renderGraded();
+  const rb=document.getElementById('resultsBar');rb.classList.add('active');
+  document.getElementById('resultScore').textContent=pct+'%';
+  document.getElementById('correctCount').textContent=ok;
+  document.getElementById('wrongCount').textContent=wr;
+  document.getElementById('progressFill').style.width='100%';
+  updateReciteBadge();
+  if(pct>=80)showToast('太棒了！正确率 '+pct+'%','success');
+  else if(pct>=50)showToast('继续加油！正确率 '+pct+'%','info');
+  else showToast('需要多复习哦，正确率 '+pct+'%','error');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-
-function norm(s){return s.replace(/[\s\u3000\p{P}\p{S}]/gu,"").toLowerCase()}
-
-function togRv(){rvOn=!rvOn;document.getElementById('rvb').classList.toggle('on',rvOn);applyRv()}
-function applyRv(){document.querySelectorAll('.bw').forEach(w=>{if(rvOn&&!graded)w.classList.add('rv');else w.classList.remove('rv')})}
-
+// ===== Review Mode =====
+function toggleReview(){if(mode!=='review')return;rvOn=!rvOn;document.getElementById('floatBtn').classList.toggle('active',rvOn);applyReview()}
+function applyReview(){document.querySelectorAll('.blank-wrap').forEach(w=>{if(rvOn&&!graded)w.classList.add('reviewing');else w.classList.remove('reviewing')})}
 function resetQ(){
-  graded=false;rvOn=false;document.getElementById('rvb').classList.remove('on');
-  document.querySelectorAll('.bw').forEach(w=>{
-    w.classList.remove('rv');
-    const inp=w.querySelector('.bi');if(!inp)return;
-    inp.value='';inp.disabled=false;inp.classList.remove('ok','wr');
-    // remove correct-answer labels
-    let nx=inp.nextElementSibling;while(nx){const cur=nx;nx=nx.nextElementSibling;if(cur.classList.contains('ca'))cur.remove()}
+  graded=false;rvOn=false;document.getElementById('floatBtn').classList.remove('active');
+  document.querySelectorAll('.blank-wrap').forEach(w=>{
+    w.classList.remove('reviewing');
+    const inp=w.querySelector('.blank-input');if(!inp)return;
+    inp.value='';inp.disabled=false;inp.classList.remove('correct','wrong');
+    let nx=inp.nextElementSibling;while(nx){const cur=nx;nx=nx.nextElementSibling;if(cur.classList.contains('correct-answer'))cur.remove()}
   });
-  document.getElementById('rbar').style.display='none';
-  document.getElementById('ac').textContent='0';
-  document.getElementById('pf').style.width='0%';
+  document.getElementById('resultsBar').classList.remove('active');
+  document.getElementById('answeredCount').textContent='0';
+  document.getElementById('progressFill').style.width='0%';
 }
-
 async function nextB(){
-  if(!graded) grade();
-  graded=false;rvOn=false;document.getElementById('rvb').classList.remove('on');
+  if(!graded)grade();
+  graded=false;rvOn=false;document.getElementById('floatBtn').classList.remove('active');
   await loadBatch();
-  if(!curQ.length){alert('所有题目都做过了！可以点"重做"或"上传"新文件');return}
+  if(!curQ.length){showToast('所有题目都做过了！可以点"重做"或上传新文件','info');return}
   window.scrollTo({top:0,behavior:'smooth'});
 }
-
 async function prevB(){
-  if(!graded){grade()}
-  if(batchHist.length<=1){alert('没有上一批了');return}
-  graded=false;rvOn=false;document.getElementById('rvb').classList.remove('on');
-  const last=batchHist.pop();
-  last.forEach(i=>usedSet.delete(i));
-  const prev=batchHist[batchHist.length-1];
-  const all=await dbAll();
-  curQ=prev.map(i=>({...all[i],_idx:i}));
-  document.getElementById('tc').textContent=totalQ;
-  document.getElementById('rc').textContent=totalQ-usedSet.size;
-  document.getElementById('ac').textContent='0';
-  document.getElementById('rbar').style.display='none';
-  document.getElementById('pf').style.width='0%';
-  renderQ();
+  if(!graded)grade();
+  if(batchHist.length<=1){showToast('没有上一批了','info');return}
+  graded=false;rvOn=false;document.getElementById('floatBtn').classList.remove('active');
+  const last=batchHist.pop();last.forEach(i=>usedSet.delete(i));
+  const prev=batchHist[batchHist.length-1];const all=await dbAll();
+  curQ=prev.map(i=>({...all[i],_idx:i}));updateStats();renderQ();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function goBack(){
-  document.getElementById('qSec').classList.remove('on');
-  document.getElementById('rvb').style.display='none';
+  document.getElementById('quizSec').classList.remove('active');
+  document.getElementById('floatBtn').style.display='none';
   document.getElementById('upSec').style.display='block';
-  fl.innerHTML='';graded=false;document.getElementById('gradedHist').innerHTML='';document.getElementById('gradedHist').style.display='none';rvOn=false;selCnt=0;usedSet=new Set();orderIdx=0;
+  document.getElementById('modePanel').classList.remove('active');
+  document.getElementById('gradedSection').classList.remove('active');
+  document.getElementById('gradedSelector').innerHTML='';
+  document.getElementById('gradedView').innerHTML='';
+  fileList.innerHTML='';graded=false;gradedBatches=[];rvOn=false;selCnt=0;usedSet=new Set();orderIdx=0;batchHist=[];wrongQueue=[];reciteCount=0;recitePhase='normal';
   loadInfo();
 }
-
+// ===== Graded History =====
+function renderGraded(){
+  const sec=document.getElementById('gradedSection');
+  if(!gradedBatches.length){sec.classList.remove('active');return}
+  sec.classList.add('active');
+  const sel=document.getElementById('gradedSelector');sel.innerHTML='';
+  gradedBatches.forEach((b,i)=>{const btn=document.createElement('button');btn.className='graded-btn'+(i===gradedBatches.length-1?' selected':'');btn.textContent='第'+(i+1)+'批 '+b.pct+'%';btn.onclick=()=>showGradedBatch(i);sel.appendChild(btn)});
+  showGradedBatch(gradedBatches.length-1);
+}
+function showGradedBatch(idx){
+  document.querySelectorAll('.graded-btn').forEach((b,i)=>b.classList.toggle('selected',i===idx));
+  const b=gradedBatches[idx],view=document.getElementById('gradedView');
+  view.innerHTML='<div class="graded-header">'+b.ok+'/'+b.cards.length+'题正确 ('+b.pct+'%)</div>';
+  b.cards.forEach(c=>view.appendChild(c));
+}
 // ===== Drag floating button =====
 (function(){
-  const btn=document.getElementById("rvb");
+  const btn=document.getElementById("floatBtn");
   let dragging=false,startX,startY,origX,origY,moved=false;
   function pt(e){const t=e.touches?e.touches[0]:e;return{x:t.clientX,y:t.clientY}}
-  function onStart(e){
-    if(e.cancelable&&e.type==="touchstart")e.preventDefault();
-    dragging=true;moved=false;
-    const p=pt(e);startX=p.x;startY=p.y;
-    const r=btn.getBoundingClientRect();origX=r.left;origY=r.top;
-  }
-  function onMove(e){
-    if(!dragging)return;
-    if(e.cancelable)e.preventDefault();
-    const p=pt(e);const dx=p.x-startX,dy=p.y-startY;
-    if(Math.abs(dx)+Math.abs(dy)>8)moved=true;
-    if(!moved)return;
-    let nx=origX+dx,ny=origY+dy;
-    nx=Math.max(4,Math.min(window.innerWidth-52,nx));
-    ny=Math.max(4,Math.min(window.innerHeight-52,ny));
-    btn.style.left=nx+"px";btn.style.top=ny+"px";btn.style.right="auto";btn.style.bottom="auto";
-  }
-  function onEnd(e){
-    if(!dragging)return;dragging=false;
-    if(!moved)togRv();
-  }
+  function onStart(e){if(e.cancelable&&e.type==="touchstart")e.preventDefault();dragging=true;moved=false;const p=pt(e);startX=p.x;startY=p.y;const r=btn.getBoundingClientRect();origX=r.left;origY=r.top}
+  function onMove(e){if(!dragging)return;if(e.cancelable)e.preventDefault();const p=pt(e);const dx=p.x-startX,dy=p.y-startY;if(Math.abs(dx)+Math.abs(dy)>8)moved=true;if(!moved)return;let nx=origX+dx,ny=origY+dy;nx=Math.max(4,Math.min(window.innerWidth-60,nx));ny=Math.max(4,Math.min(window.innerHeight-60,ny));btn.style.left=nx+"px";btn.style.top=ny+"px";btn.style.right="auto";btn.style.bottom="auto"}
+  function onEnd(){if(!dragging)return;dragging=false;if(!moved)toggleReview()}
   btn.addEventListener("mousedown",function(e){e.preventDefault();onStart(e)});
   btn.addEventListener("touchstart",onStart,{passive:false});
-  document.addEventListener("mousemove",onMove);
-  document.addEventListener("touchmove",onMove,{passive:false});
-  document.addEventListener("mouseup",onEnd);
-  document.addEventListener("touchend",onEnd);
+  document.addEventListener("mousemove",onMove);document.addEventListener("touchmove",onMove,{passive:false});
+  document.addEventListener("mouseup",onEnd);document.addEventListener("touchend",onEnd);
 })();
+// ===== Init =====
 loadInfo();
 </script>
 </body>
