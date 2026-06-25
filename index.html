@@ -469,48 +469,37 @@ function goBack(){
 
 // ===== Drag floating button =====
 (function(){
-  const btn=document.getElementById('rvb');
-  let dragging=false,startX,startY,origX,origY;
-  function pos(e){
-    const t=e.touches?e.touches[0]:e;
-    return{x:t.clientX,y:t.clientY};
-  }
+  const btn=document.getElementById("rvb");
+  let dragging=false,startX,startY,origX,origY,moved=false;
+  function pt(e){const t=e.touches?e.touches[0]:e;return{x:t.clientX,y:t.clientY}}
   function onStart(e){
-    if(e.type==='click'){
-      // Only toggle if not dragged
-      if(btn._wasDragged){btn._wasDragged=false;e.preventDefault();return}
-      return;
-    }
-    e.preventDefault();dragging=true;
-    const p=pos(e);startX=p.x;startY=p.y;
-    const rect=btn.getBoundingClientRect();
-    origX=rect.left;origY=rect.top;
-    btn._moved=false;
+    if(e.cancelable&&e.type==="touchstart")e.preventDefault();
+    dragging=true;moved=false;
+    const p=pt(e);startX=p.x;startY=p.y;
+    const r=btn.getBoundingClientRect();origX=r.left;origY=r.top;
   }
   function onMove(e){
     if(!dragging)return;
-    const p=pos(e);
-    const dx=p.x-startX,dy=p.y-startY;
-    if(Math.abs(dx)+Math.abs(dy)>5) btn._moved=true;
+    if(e.cancelable)e.preventDefault();
+    const p=pt(e);const dx=p.x-startX,dy=p.y-startY;
+    if(Math.abs(dx)+Math.abs(dy)>8)moved=true;
+    if(!moved)return;
     let nx=origX+dx,ny=origY+dy;
-    nx=Math.max(0,Math.min(window.innerWidth-48,nx));
-    ny=Math.max(0,Math.min(window.innerHeight-48,ny));
-    btn.style.right='auto';btn.style.bottom='auto';
-    btn.style.left=nx+'px';btn.style.top=ny+'px';
+    nx=Math.max(4,Math.min(window.innerWidth-52,nx));
+    ny=Math.max(4,Math.min(window.innerHeight-52,ny));
+    btn.style.left=nx+"px";btn.style.top=ny+"px";btn.style.right="auto";btn.style.bottom="auto";
   }
-  function onEnd(){
+  function onEnd(e){
     if(!dragging)return;dragging=false;
-    if(btn._moved) btn._wasDragged=true;
+    if(!moved)togRv();
   }
-  btn.addEventListener('mousedown',onStart);
-  btn.addEventListener('touchstart',onStart,{passive:false});
-  document.addEventListener('mousemove',onMove);
-  document.addEventListener('touchmove',onMove,{passive:false});
-  document.addEventListener('mouseup',onEnd);
-  document.addEventListener('touchend',onEnd);
-  btn.addEventListener('click',function(e){if(!btn._wasDragged)togRv();else btn._wasDragged=false;e.stopImmediatePropagation()});
+  btn.addEventListener("mousedown",function(e){e.preventDefault();onStart(e)});
+  btn.addEventListener("touchstart",onStart,{passive:false});
+  document.addEventListener("mousemove",onMove);
+  document.addEventListener("touchmove",onMove,{passive:false});
+  document.addEventListener("mouseup",onEnd);
+  document.addEventListener("touchend",onEnd);
 })();
-// Init
 loadInfo();
 </script>
 </body>
