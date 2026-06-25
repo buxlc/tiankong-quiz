@@ -123,7 +123,6 @@ h1{text-align:center;font-size:28px;margin-bottom:8px}
     <div class="qst">题库 <span id="tc">0</span> 题 · 已答 <span id="ac">0</span> · 剩余 <span id="rc">0</span></div>
     <div class="bg">
       <button class="btn bs bsm" onclick="grade()">✅ 批改</button>
-      <button class="btn bo bsm" id="rvb" onclick="togRv()">👁 复习</button>
       <button class="btn bo bsm" onclick="resetQ()">🔄 重做</button>
       <button class="btn bo bsm" onclick="prevB()">⬅️ 上一批</button>
       <button class="btn bo bsm" onclick="nextB()">➡️ 下一批</button>
@@ -425,7 +424,7 @@ function resetQ(){
 }
 
 async function nextB(){
-  if(!graded){grade()}else{
+  if(!graded) grade();
   graded=false;rvOn=false;document.getElementById('rvb').classList.remove('on');
   await loadBatch();
   if(!curQ.length){alert('所有题目都做过了！可以点"重做"或"上传"新文件');return}
