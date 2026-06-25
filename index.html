@@ -124,6 +124,7 @@ h1{text-align:center;font-size:28px;margin-bottom:8px}
       <button class="btn bs bsm" onclick="grade()">✅ 批改</button>
       <button class="btn bo bsm" id="rvb" onclick="togRv()">👁 复习</button>
       <button class="btn bo bsm" onclick="resetQ()">🔄 重做</button>
+      <button class="btn bo bsm" onclick="prevB()">⬅️ 上一批</button>
       <button class="btn bo bsm" onclick="nextB()">➡️ 下一批</button>
       <button class="btn bo bsm" onclick="goBack()">📁 上传</button>
     </div>
@@ -384,7 +385,7 @@ function updP(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function norm(s){return s.replace(/\s+/g,'').replace(/，/g,',').replace(/。/g,'.').replace(/（/g,'(').replace(/）/g,')').toLowerCase()}
+function norm(s){return s.replace(/[\s\u3000\p{P}\p{S}]/gu,"").toLowerCase()}
 
 function togRv(){rvOn=!rvOn;document.getElementById('rvb').classList.toggle('on',rvOn);applyRv()}
 function applyRv(){document.querySelectorAll('.bw').forEach(w=>{if(rvOn&&!graded)w.classList.add('rv');else w.classList.remove('rv')})}
