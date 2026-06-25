@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -32,7 +32,7 @@ h1{text-align:center;font-size:28px;margin-bottom:8px}
 .qt{font-size:16px;line-height:2.4;word-break:break-word}
 .qsrc{font-size:12px;color:var(--tl);margin-top:10px;padding-top:8px;border-top:1px solid var(--bd)}
 .bw{position:relative;display:inline-block;vertical-align:baseline}
-.bi{display:inline-block;border:none;border-bottom:2px solid var(--bbd);background:var(--bbg);padding:2px 8px;font-size:15px;min-width:100px;outline:none;border-radius:4px 4px 0 0;font-family:inherit;transition:all .2s;vertical-align:baseline}
+.bi{display:inline-block;border:none;border-bottom:2px solid var(--bbd);background:var(--bbg);padding:2px 8px;font-size:15px;min-width:80px;max-width:calc(100vw - 80px);outline:none;border-radius:4px 4px 0 0;font-family:inherit;transition:all .2s;vertical-align:baseline;overflow:hidden;text-overflow:ellipsis}
 .bi:focus{border-bottom-color:var(--pri);background:#fefce8}
 .bi.ok{background:var(--cbg);border-bottom-color:var(--cbd);color:#166534}
 .bi.wr{background:var(--wbg);border-bottom-color:var(--wbd);color:#991b1b;text-decoration:line-through}
@@ -73,14 +73,12 @@ h1{text-align:center;font-size:28px;margin-bottom:8px}
 .tb{padding:5px 12px;border:1px solid var(--bd);border-radius:6px;background:#fff;font-size:12px;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--txt)}
 .tb:hover{border-color:var(--pri);color:var(--pri)}
 .tb.run{background:var(--pri);color:#fff;border-color:var(--pri)}
-.tdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
-.tdot.off{background:var(--bd)}.tdot.on{background:var(--ok);animation:pl 1.5s infinite}
 @keyframes pl{0%,100%{opacity:1}50%{opacity:.4}}
 .ld{display:none;text-align:center;padding:40px}.ld.on{display:block}
 .sp{width:40px;height:40px;border:4px solid var(--bd);border-top-color:var(--pri);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .badge{display:inline-block;background:var(--pri);color:#fff;padding:4px 14px;border-radius:20px;font-size:13px;margin-top:12px}
-@media(max-width:600px){.wrap{padding:16px 12px}h1{font-size:22px}.qc{padding:16px}.bi{min-width:80px;font-size:14px}.tw{right:10px;top:10px;padding:10px 14px;min-width:120px}.td{font-size:24px}}
+.fbtn{position:fixed;right:20px;bottom:24px;z-index:100;display:flex;flex-direction:column;gap:8px}.fbtn button{width:48px;height:48px;border-radius:50%;border:none;font-size:20px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.15);transition:all .2s;display:flex;align-items:center;justify-content:center}.fbtn button:hover{transform:scale(1.1)}.frv{background:var(--pri);color:#fff}.frv.on{background:#7c3aed}@media(max-width:600px){.wrap{padding:16px 12px}h1{font-size:22px}.qc{padding:16px}.bi{min-width:80px;font-size:14px}}
 </style>
 </head>
 <body>
@@ -141,14 +139,10 @@ h1{text-align:center;font-size:28px;margin-bottom:8px}
   <div id="qc2"></div>
 </div>
 </div>
-<div class="tw" id="tw">
-  <div class="tt"><span class="tdot off" id="tdot"></span>答题计时</div>
-  <div class="td" id="tdsp">00:00</div>
-  <div class="tc">
-    <button class="tb" id="ttg" onclick="togT()">▶ 开始</button>
-    <button class="tb" onclick="resT()">↺ 重置</button>
-  </div>
-</div><script>
+<div class="fbtn" id="fbtns" style="display:none">
+  <button class="frv" id="rvb" onclick="togRv()" title="复习模式">👁</button>
+</div>
+<script>
 // ===== IndexedDB =====
 const DBN='tiankongDB', DBV=1, STORE='questions';
 function openDB(){return new Promise((ok,no)=>{const r=indexedDB.open(DBN,DBV);r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE,{keyPath:'id',autoIncrement:true})};r.onsuccess=e=>ok(e.target.result);r.onerror=e=>no(e)})}
@@ -230,7 +224,7 @@ function parseDocx(xml){
   return qs;
 }// ===== App State =====
 let mode='random',selCnt=0,rvOn=false,graded=false;
-let curQ=[],usedSet=new Set(),totalQ=0,orderIdx=0;
+let curQ=[],usedSet=new Set(),totalQ=0,orderIdx=0,batchHist=[];
 const dz=document.getElementById('dz'),fi=document.getElementById('fi'),fl=document.getElementById('fl'),ld=document.getElementById('ld'),sqw=document.getElementById('sqw');
 
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dg')});
@@ -292,11 +286,10 @@ function esc(s){const d=document.createElement('div');d.textContent=s;return d.i
 async function startQ(){
   document.getElementById('upSec').style.display='none';
   document.getElementById('qSec').classList.add('on');
-  document.getElementById('tw').classList.add('on');
-  graded=false;rvOn=false;usedSet=new Set();orderIdx=0;
+  document.getElementById('fbtns').style.display='flex';
+  graded=false;rvOn=false;usedSet=new Set();orderIdx=0;batchHist=[];
   document.getElementById('rvb').classList.remove('on');
   await loadBatch();
-  resT();startT();
 }
 
 async function loadBatch(){
@@ -307,13 +300,21 @@ async function loadBatch(){
   let cnt=selCnt>0?selCnt:avail.length;
   let picked;
   if(mode==='order'){
-    picked=avail.slice(orderIdx,orderIdx+cnt);
-    orderIdx+=picked.length;
-    if(orderIdx>=avail.length)orderIdx=0;
+    // Fix: use absolute cursor through all[], not filtered avail[]
+    while(orderIdx<all.length && usedSet.has(orderIdx)) orderIdx++;
+    picked=[];
+    let scan=orderIdx;
+    while(picked.length<cnt && scan<all.length){
+      if(!usedSet.has(scan)) picked.push(scan);
+      scan++;
+    }
+    orderIdx=scan;
+    if(orderIdx>=all.length) orderIdx=0;
   }else{
     for(let i=avail.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[avail[i],avail[j]]=[avail[j],avail[i]]}
     picked=avail.slice(0,cnt);
   }
+  batchHist.push(picked);
   picked.forEach(i=>usedSet.add(i));
   curQ=picked.map(i=>({...all[i],_idx:i}));
   document.getElementById('tc').textContent=totalQ;
@@ -338,7 +339,7 @@ function renderQ(){
         const w=document.createElement('span');w.className='bw';
         const inp=document.createElement('input');inp.type='text';inp.className='bi';
         inp.dataset.answer=seg.text.trim();inp.placeholder='______';
-        inp.style.width=Math.max(100,seg.text.length*18+20)+'px';
+        inp.style.width=Math.min(Math.max(100,seg.text.length*18+20),320)+'px';
         inp.addEventListener('input',updP);
         const lbl=document.createElement('span');lbl.className='rl';
         lbl.textContent=seg.text.trim();
@@ -380,7 +381,7 @@ function updP(){
   document.getElementById('cc2').textContent=ok;
   document.getElementById('wc').textContent=wr;
   document.getElementById('pf').style.width='100%';
-  pauseT();window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function norm(s){return s.replace(/\s+/g,'').replace(/，/g,',').replace(/。/g,'.').replace(/（/g,'(').replace(/）/g,')').toLowerCase()}
@@ -400,35 +401,38 @@ function resetQ(){
   document.getElementById('rbar').style.display='none';
   document.getElementById('ac').textContent='0';
   document.getElementById('pf').style.width='0%';
-  resT();startT();
 }
 
 async function nextB(){
   graded=false;rvOn=false;document.getElementById('rvb').classList.remove('on');
   await loadBatch();
   if(!curQ.length){alert('所有题目都做过了！可以点"重做"或"上传"新文件');return}
-  resT();startT();window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
+async function prevB(){
+  if(batchHist.length<=1){alert('没有上一批了');return}
+  graded=false;rvOn=false;document.getElementById('rvb').classList.remove('on');
+  const last=batchHist.pop();
+  last.forEach(i=>usedSet.delete(i));
+  const prev=batchHist[batchHist.length-1];
+  const all=await dbAll();
+  curQ=prev.map(i=>({...all[i],_idx:i}));
+  document.getElementById('tc').textContent=totalQ;
+  document.getElementById('rc').textContent=totalQ-usedSet.size;
+  document.getElementById('ac').textContent='0';
+  document.getElementById('rbar').style.display='none';
+  document.getElementById('pf').style.width='0%';
+  renderQ();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 function goBack(){
   document.getElementById('qSec').classList.remove('on');
-  document.getElementById('tw').classList.remove('on');
+  document.getElementById('fbtns').style.display='none';
   document.getElementById('upSec').style.display='block';
   fl.innerHTML='';graded=false;rvOn=false;selCnt=0;usedSet=new Set();orderIdx=0;
-  pauseT();loadInfo();
-}// ===== Timer =====
-let tSec=0,tInt=null,tRun=false;
-function startT(){if(tInt)clearInterval(tInt);tRun=true;
-  document.getElementById('ttg').textContent='⏸ 暂停';document.getElementById('ttg').classList.add('run');document.getElementById('tdot').className='tdot on';
-  tInt=setInterval(()=>{tSec++;updTD()},1000)}
-function pauseT(){tRun=false;if(tInt){clearInterval(tInt);tInt=null}
-  document.getElementById('ttg').textContent='▶ 继续';document.getElementById('ttg').classList.remove('run');document.getElementById('tdot').className='tdot off'}
-function togT(){if(tRun)pauseT();else startT()}
-function resT(){if(tInt){clearInterval(tInt);tInt=null}tRun=false;tSec=0;updTD();
-  document.getElementById('ttg').textContent='▶ 开始';document.getElementById('ttg').classList.remove('run');document.getElementById('tdot').className='tdot off'}
-function updTD(){const h=Math.floor(tSec/3600),m=Math.floor(tSec%3600/60),s=tSec%60;
-  const p=n=>String(n).padStart(2,'0');
-  document.getElementById('tdsp').textContent=h>0?h+':'+p(m)+':'+p(s):p(m)+':'+p(s)}
+  loadInfo();
+}
 
 // Init
 loadInfo();
